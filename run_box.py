@@ -13,12 +13,15 @@ ap.add_argument("--no-speed", action="store_true", help="baseline: no surrogate,
 ap.add_argument("--no-love", action="store_true", help="ablation: bond never feeds balance/reproduction drive")
 ap.add_argument("--no-rep", action="store_true", help="ablation: reputation fixed at 0.5 (no trust signal)")
 ap.add_argument("--cheaters", type=float, default=0.0, help="extra fraction of fake-reputation cheater minds")
+ap.add_argument("--rules", default="v1", choices=["v1", "v2"], help="v2 = fixed mechanics (genesis/town_v2.py)")
+ap.add_argument("--cheat-mode", default="standard", choices=["standard", "stranger", "evolve", "planted_honest"], help="v2 cheater arm")
 ap.add_argument("--long", action="store_true", help="longer lives (final rung 512 steps) and bigger town (size 36)")
 a = ap.parse_args()
 ov = {}
 if a.no_love: ov["love"] = False
 if a.no_rep: ov["reputation"] = False
 if a.cheaters: ov["cheaters"] = a.cheaters
+if a.rules == "v2": ov.update(rules="v2", cheat_mode=a.cheat_mode)
 if a.long: ov.update(t_scale=8 / 3, size=36.0)
 ck = os.path.join(a.out, "ckpt.pkl")
 if os.path.exists(ck): g = Genesis.load(a.out); print("resumed at gen", g.gen)

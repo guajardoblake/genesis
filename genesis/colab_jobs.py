@@ -139,6 +139,9 @@ def _gpu_work(args, xp=None):
     from genesis.engine import rung_cfg
     from genesis import town_xp
     g, env, seed, rung, init_w = args
+    if env.get("rules") == "v2":
+        from genesis import town_xp_v2
+        return town_xp_v2.run_town(g, env, seed, return_w=True, init_w=init_w, xp=xp, town_size=TOWN, **rung_cfg(env, rung))
     return town_xp.run_town(g, env, seed, return_w=True, init_w=init_w, xp=xp, town_size=TOWN, **rung_cfg(env, rung))
 
 def scale(drive, hours, tiny=False, seed=0, cheaters=0.1):

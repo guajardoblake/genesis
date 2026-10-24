@@ -8,6 +8,7 @@ from .surrogate import Surrogate
 
 RUNGS = [dict(T=32, per_genome=2), dict(T=96, per_genome=4), dict(T=192, per_genome=6)]  # Hyperband-style
 KEEP = [0.34, 0.34]
+CPOOL = 256   # v2 evolving-cheater pool size
 BINS = 8  # descriptors: cooperation, closeness to partner, law-breaking rate
 DESC = ("coop", "closeness", "law_breaks"); DLO = np.array([0, 0, 0]); DHI = np.array([0.6, 0.6, 0.15])
 
@@ -19,12 +20,19 @@ def law_metrics(o):
     pk = promise_keeping_rate(o["promise_breaks"], o["promise_opps"])
     hon = o["honesty"]; rp = o["rep_mean"]
     corr = float(np.corrcoef(rp, hon)[0, 1]) if len(hon) > 2 and hon.std() > 0 and rp.std() > 0 else None
+    extra = {}
+    if "rep_target" in o:   # v2 only: calibrated gaps (rep vs its own conduct average; rank-free z-gap vs honesty)
+        z = lambda x: (x - x.mean()) / (x.std() if x.std() > 0 else 1.0)
+        extra = dict(rep_target=round(float(o["rep_target"].mean()), 5),
+                     rep_gap_cal=round(float((o["rep_mean"] - o["rep_target"]).mean()), 5),
+                     rep_gap_z_abs=round(float(np.abs(z(rp) - z(hon)).mean()), 5),
+                     **{k: round(float(o[k].mean()), 5) for k in o if k.startswith("dx_")})
     return dict(promise_keeping=None if pk != pk else round(pk, 5), promise_opps=round(float(o["promise_opps"].sum()), 2),
                 rep_gap_mean=round(float(gap.mean()), 5), rep_gap_abs=round(float(np.abs(gap).mean()), 5),
                 rep_mean=round(float(rp.mean()), 5), honesty=round(float(hon.mean()), 5),
                 rep_honesty_corr=None if corr is None else round(corr, 4), n=int(len(hon)),
                 **{k: round(float(o[k].mean()), 5) for k in o if k.startswith("cheat_")},
-                honest_births=round(float(o["births"].mean()), 5))
+                honest_births=round(float(o["births"].mean()), 5), **extra)
 
 def survives(o):  # minimal criterion = stayed alive and balanced (nature's filter, not a score)
     return (o["survival"] > 0.6) & (o["balanced"] > 0.3)
@@ -32,10 +40,15 @@ def survives(o):  # minimal criterion = stayed alive and balanced (nature's filt
 def repro_key(o):  # replacement in a niche: who left more offspring, ties broken by time alive
     return o["births"] + 0.01 * o["survival"]
 
+run_town_v2 = None   # GPU drivers may set this to town_xp_v2.run_town
+
 def _work(args):
     g, env, seed, rung, init_w = args
     os.environ.setdefault("OMP_NUM_THREADS", "1")
     rg = rung_cfg(env, rung)
+    if env.get("rules") == "v2":   # v2 rules live in town_v2 (v1 town.py untouched)
+        from .town_v2 import run_town as rt2
+        return (run_town_v2 or rt2)(g, env, seed, return_w=True, init_w=init_w, **rg)
     return run_town(g, env, seed, return_w=True, init_w=init_w, **rg)
 
 def rung_cfg(env, rung):  # 'long' config scales every rung's life length (final rung 192 -> 512 at t_scale 8/3)
@@ -48,6 +61,10 @@ class Genesis:
         self.shard = shard; self.screen_n = screen_n; self.speed = speed
         self.envs = [dict(default_env(), **(env_overrides or {}))]; self.archives = [dict()]  # per env: cell -> record
         self.sur = Surrogate(); self.cache = {}; self.gen = 0; self.stats = dict(sim_genomes=0, sim_agent_steps=0, screened=0, cache_hits=0, early_dropped=0)
+        e0 = self.envs[0]
+        if e0.get("rules") == "v2" and e0.get("cheat_mode") == "evolve" and e0.get("cheaters", 0) > 0:
+            self.crng = np.random.default_rng(seed + 424242)   # inherited cheater pool (v2 arm b)
+            self.cpool = dict(g=GN.sample(self.crng, CPOOL), p=np.full(CPOOL, 0.5)); self._cfeed = []
         self.novel = np.zeros((0, 3)); self.cell_gain = {}; self.t_sim = 0.0; self.t_total = 0.0
 
     # ---------- checkpoint ----------
@@ -69,9 +86,13 @@ class Genesis:
         for i in range(0, n, s):
             iw = None
             if init_w is not None: iw = {k: v[i:i + s] for k, v in init_w.items()}
+            if getattr(self, "cpool", None) is not None and env.get("cheat_mode") == "evolve": env = dict(env, cheat_pool=self.cpool)
             jobs.append((g[i:i + s], env, int(self.rng.integers(1 << 31)), rung, iw))
         t = time.time(); res = list(pool.imap(_work, jobs))  # small shards -> idle workers steal the next one
         self.t_sim += time.time() - t
+        if any("_cheat_idx" in r for r in res):
+            for r in res:
+                if "_cheat_idx" in r: self._cfeed.append((r.pop("_cheat_idx"), r.pop("_cheat_births")))
         out = {k: np.concatenate([r[k] for r in res]) for k in res[0]}
         self.stats["sim_genomes"] += n; rg = rung_cfg(env, rung); self.stats["sim_agent_steps"] += int(n * rg["T"] * rg["per_genome"])
         return out
@@ -182,6 +203,18 @@ class Genesis:
                     self.archives[ei][c] = dict(g=g[j].copy(), key=k, o={kk: float(v[j]) for kk, v in o.items() if v.ndim == 1}, Win=o["Win"][j], Wout=o["Wout"][j], gen=self.gen); moved += 1
         return moved
 
+    def evolve_cheaters(self):
+        """v2 arm (b): cheaters reproduce by their own births. Pool members sampled this generation get their mean
+        births; parents are drawn in proportion to births (+ small floor), genomes mutate, steal propensity p
+        inherits with N(0, 0.05) noise in [0, 1]. Unsampled members keep their slot only if drawn as parents."""
+        if not self._cfeed: return
+        n = len(self.cpool["p"]); s = np.zeros(n); c = np.zeros(n)
+        for idx, b in self._cfeed: np.add.at(s, idx, b); np.add.at(c, idx, 1)
+        self._cfeed = []
+        fit = np.where(c > 0, s / np.maximum(c, 1), np.nan); fit = np.where(np.isnan(fit), np.nanmean(fit) if (c > 0).any() else 0, fit)
+        w = fit + 0.01; w = w / w.sum(); par = self.crng.choice(n, n, p=w)
+        self.cpool = dict(g=GN.mutate(self.crng, self.cpool["g"][par]), p=np.clip(self.cpool["p"][par] + self.crng.normal(0, 0.05, n), 0, 1))
+
     def lineage(self, results):
         """Which design choices are carried by minds that actually reproduced (offspring-weighted)."""
         rows = []
@@ -213,6 +246,7 @@ class Genesis:
                 if len(self.sur.y) and (self.speed):
                     self.sur.fit()
                 p = self.poet(pool); m = self.transfer(pool)
+                if getattr(self, "cpool", None) is not None: self.evolve_cheaters()
                 lin = self.lineage(results)
                 if lin:
                     with open(os.path.join(self.out, "lineage.jsonl"), "a") as f: f.write(json.dumps(lin) + "\n")
