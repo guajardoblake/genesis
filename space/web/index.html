@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GENESIS: a tiny evolving town, in your browser</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>body{font-family:system-ui,sans-serif;max-width:1000px;margin:auto;padding:12px;line-height:1.45;color:#222}
+.row{display:flex;gap:16px;flex-wrap:wrap}.row>div{flex:1;min-width:280px}button{font-size:1.05em;padding:8px 16px;background:#f60;color:#fff;border:0;border-radius:6px}
+button:disabled{background:#aaa}#status{margin:8px 0;font-weight:600}.box{background:#f6f6f6;padding:10px;border-radius:6px}code{background:#eee;padding:0 3px}</style></head><body>
+<h1>GENESIS: a tiny evolving town, in your browser</h1>
+<p><b>The question.</b> If simple learning minds are shaped <i>only</i> by social-trust incentives (reputation, bonds, access to shared resources), with no hard-coded rules, do they keep the town's norms across generations, or do they learn to game them?</p>
+<p><b>What happens when you press Run.</b> Each "genome" is a recipe for <i>how</i> a mind learns (12 choices such as the plasticity rule, memory type, how strongly the partner bond, or "love", is wired into its drives, exploration, and trust sensitivity). Minds live short lives in a 12x12 town with hunger, sleep, cold and hazards. Laws (no harm, no theft, keep your word) are enforced only through trust and reputation. Nothing is scored: the engine records who survived and left offspring, and the next generation is bred from those (MAP-Elites quality-diversity search with successive halving). This page runs the <b>unmodified engine code</b> from the <a href="https://github.com/guajardoblake/genesis">GENESIS repo</a> (Apache-2.0) in your browser with Pyodide. Nothing is sent to a server.</p>
+<p class="box"><b>Honest limits.</b> This is a <i>toy world</i>. A demo run is tiny (a few generations, a small population, one random seed), and results vary from run to run. Nothing here is evidence about AGI or real-world AI safety. The full research runs are far larger and still early: one seed so far, with promise-keeping and reputation-gap metrics still being added.</p>
+<div class="row"><label>Generations <input id="gens" type="number" min="2" max="40" value="15"></label>
+<label>Genomes per generation <select id="pop"><option>64</option><option selected>128</option><option>256</option></select></label>
+<label>Random seed <input id="seed" type="number" value="0"></label>
+<button id="run" disabled>Loading Python…</button></div>
+<div id="status">Loading Python and numpy in your browser (first visit takes about 10–30 s)…</div>
+<div class="row"><div><canvas id="c1"></canvas></div><div><canvas id="c2"></canvas></div></div>
+<div class="row"><div style="height:240px"><canvas id="d0"></canvas></div><div style="height:240px"><canvas id="d1"></canvas></div><div style="height:240px"><canvas id="d2"></canvas></div></div>
+<div id="summary" class="box" style="white-space:pre-wrap;margin-top:10px"></div>
+<p style="font-size:.9em">Built by DTOM AI Labs (Blake Guajardo). Code: <a href="https://github.com/guajardoblake/genesis">github.com/guajardoblake/genesis</a>, Apache-2.0.</p>
+<script>
+const w = new Worker("worker.js"); const $ = id => document.getElementById(id); const charts = {};
+function chart(id, cfg){ if(charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
+w.onmessage = ({data:m}) => {
+  if (m.type==="ready"){ $("run").disabled=false; $("run").textContent="Run a small world"; $("status").textContent="Ready."; }
+  else if (m.type==="progress"){ $("status").textContent=`Generation ${m.k}/${m.n}…`; }
+  else if (m.type==="error"){ $("status").textContent="Error: "+m.msg; $("run").disabled=false; }
+  else if (m.type==="done"){
+    const r=m.data.res, h=r.hist, g=h.map(x=>x.gen); $("run").disabled=false; $("status").textContent="Done.";
+    chart("c1",{type:"line",data:{labels:g,datasets:[{label:"mean offspring per mind (finalists)",data:h.map(x=>x.births),borderColor:"#2a7"}]},options:{scales:{x:{title:{display:true,text:"generation"}}}}});
+    chart("c2",{type:"line",data:{labels:g,datasets:[{label:"law-breaks per step",data:h.map(x=>x.law),borderColor:"#c33"},{label:"cooperation share",data:h.map(x=>x.coop),borderColor:"#36c",borderDash:[5,4]}]},options:{scales:{x:{title:{display:true,text:"generation"}}}}});
+    Object.entries(r.choices).forEach(([axis,c],i)=>{ const u=1/c.values.length;
+      chart("d"+i,{type:"bar",data:{labels:c.values,datasets:[{label:axis+" (share among reproducers)",data:c.share||c.values.map(()=>0),backgroundColor:"#888"},{type:"line",label:"uniform share",data:c.values.map(()=>u),borderColor:"#000",borderDash:[3,3],pointRadius:0}]},options:{maintainAspectRatio:false,scales:{y:{min:0,max:1}}}}); });
+    $("summary").textContent=m.data.md.replace(/\*\*/g,"").replace(/`/g,"");
+  }
+};
+$("run").onclick=()=>{ $("run").disabled=true; $("status").textContent="Starting…";
+  w.postMessage({generations:+$("gens").value, population:+$("pop").value, seed:+$("seed").value}); };
+</script></body></html>
