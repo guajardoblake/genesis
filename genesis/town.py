@@ -9,6 +9,21 @@ EXPL = np.array(AXES[9][1]); TSENS = np.array(AXES[10][1])
 LOVE_BAL = np.array([0, 1, 0, 1, 2.0]); LOVE_REP = np.array([0, 0, 1, 1, 2.0])
 
 D_OBS, H, N_ACT, N_SENSE = 14, 16, 8, 6
+def promise_keeping_rate(promise_breaks, promise_opps):
+    """Share of promise-bound encounters (bonded mind within reach of its own partner) that did NOT
+    end in theft/harm against that partner. NaN when there were no such encounters."""
+    b = float(np.sum(promise_breaks)); n = float(np.sum(promise_opps))
+    return float("nan") if n <= 0 else 1.0 - b / n
+
+def honesty(law_breaks, encounters):
+    """Actual behaviour: share of in-reach encounters with no theft/harm (1 = never broke a law)."""
+    return 1.0 - np.asarray(law_breaks, float) / np.maximum(np.asarray(encounters, float), 1.0)
+
+def reputation_gap(rep_mean, honest):
+    """Reputation minus actual behaviour. > 0: others trust a mind more than its conduct warrants
+    (reputation over-states honesty, i.e. the pattern 'gaming reputation' would produce)."""
+    return np.asarray(rep_mean, float) - np.asarray(honest, float)
+
 ACTS = ["to_food", "to_other", "eat", "sleep", "share", "take", "harm", "stay_close"]
 
 def default_env():
@@ -17,13 +32,26 @@ def default_env():
 
 def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False):
     rng = np.random.default_rng(seed)
-    G = genomes.shape[0]; B = G * per_genome
-    gid = np.repeat(np.arange(G), per_genome); g = genomes[gid]
+    G = genomes.shape[0]
+    # experiment switches (absent = default town; defaults leave dynamics bit-identical)
+    use_love = env.get("love", True); use_rep = env.get("reputation", True); cfrac = env.get("cheaters", 0.0)
+    Gc = int(np.ceil(G * cfrac)) if cfrac > 0 else 0
+    if Gc:  # cheaters: extra random-genome minds that steal/harm in reach and FAKE a high reputation
+        crng = np.random.default_rng(seed + 99991)       # separate stream: never touches the main RNG
+        genomes = np.concatenate([genomes, (crng.random((Gc, genomes.shape[1])) * np.array([len(a[1]) for a in AXES])).astype(genomes.dtype)])
+        if init_w is not None:
+            init_w = dict(mask=np.concatenate([init_w["mask"], np.zeros(Gc, bool)]),
+                          Win=np.concatenate([init_w["Win"], np.zeros((Gc,) + init_w["Win"].shape[1:], init_w["Win"].dtype)]),
+                          Wout=np.concatenate([init_w["Wout"], np.zeros((Gc,) + init_w["Wout"].shape[1:], init_w["Wout"].dtype)]))
+    Gt = G + Gc; B = Gt * per_genome
+    gid = np.repeat(np.arange(Gt), per_genome); g = genomes[gid]
     rule, mem_t, nmod, love = g[:, 0], g[:, 2], g[:, 11], g[:, 7]
     lr, dec, hor = LR[g[:, 1]], DECAY[g[:, 3]], HOR[g[:, 4]]
     sg, ppw, ex, ts = SGAIN[g[:, 6]], PPW[g[:, 8]], EXPL[g[:, 9]], TSENS[g[:, 10]]
     hmask = (np.arange(H)[None, :] < HID[g[:, 5]][:, None]).astype(np.float32)
     lb, lrp = LOVE_BAL[love], LOVE_REP[love]
+    if not use_love: lb, lrp = lb * 0, lrp * 0          # ablation: bond never enters balance or reproduction drive
+    ch = gid >= G; c_bond_with = 0.0; h_bonds = 0.0; c_lost = 0.0; FAKE = 0.9
     L = env["size"]; GR = 12
     # --- world ---
     food = np.full((GR, GR), 0.5)
@@ -47,6 +75,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
     prev_surprise = np.zeros(B); prev_bal = np.zeros(B); prev_bond = np.zeros(B)
     births = np.zeros(B); balanced_t = np.zeros(B); alive_t = np.zeros(B)
     acts_hist = np.zeros((B, N_ACT)); law_breaks = np.zeros(B); dist_partner = np.zeros(B)
+    encounters = np.zeros(B); p_opps = np.zeros(B); p_breaks = np.zeros(B); rep_sum = np.zeros(B)  # law-keeping metrics
     ar = np.arange(B)
     for t in range(T):
         day = np.sin(2 * np.pi * t / 24)
@@ -88,6 +117,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         p = np.exp(logits - logits.max(1, keepdims=True)); p /= p.sum(1, keepdims=True)
         p = (1 - ex)[:, None] * p + ex[:, None] / N_ACT
         a = (p.cumsum(1) > rng.random(B)[:, None]).argmax(1)
+        if Gc: a = np.where(ch & (nd < 2.0) & (crng.random(B) < 0.5), 5, a)   # cheaters steal when in reach
         a[~alive] = 3
         # predict inner sense (self + partner), surprise is the mind's own hidden state
         pred = np.einsum("bsh,bh->bs", Wp, h)
@@ -124,14 +154,20 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         energy += stolen; np.subtract.at(energy, near, stolen)
         harm = (a == 6) & alive & inreach
         np.add.at(pain, near, 0.3 * harm)
+        p_opps += alive & inreach & promise & (partner >= 0) & (near == partner)  # promise-bound encounter
         # laws: enforced ONLY through lost trust and bonds
         broke = take | harm
         broke_promise = broke & promise & (near == partner)
         rep = np.clip(rep - 0.1 * broke - 0.2 * broke_promise, 0, 1)
         lost = broke & (near == partner)
+        if Gc: c_lost += float((lost & ch).sum())
+        if not use_rep: rep = np.full(B, 0.5)               # ablation: no reputation signal at all
+        if Gc: rep = np.where(ch, FAKE, rep)                 # cheaters' reputation is faked high
         bond = np.where(lost, 0, bond); 
         if lost.any(): partner[partner[lost]] = -1; bond[partner[lost]] = 0; partner[lost] = -1
         law_breaks += broke
+        encounters += alive & inreach
+        p_breaks += broke_promise
         # bonding: two unpaired minds near each other, at least one sharing/staying, both trusted enough
         pair = alive & (~haspart) & inreach & (partner[near] < 0) & alive[near] & ((a == 4) | (a == 7)) & (rep[near] > 0.3) & (near != ar)
         pi = ar[pair]; pj = near[pair]
@@ -139,6 +175,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         pi, pj = pi[ok], pj[ok]
         _, u = np.unique(pj, return_index=True); pi, pj = pi[u], pj[u]
         ok2 = ~np.isin(pi, pj); pi, pj = pi[ok2], pj[ok2]
+        if Gc: hb = ~ch[pi] | ~ch[pj]; h_bonds += float(hb.sum()); c_bond_with += float((hb & (ch[pi] | ch[pj])).sum())
         partner[pi] = pj; partner[pj] = pi; promise[pi] = True; promise[pj] = True
         haspart = partner >= 0
         bond = np.where(haspart, np.clip(bond + 0.05 * close + 0.02 * share, 0, 1), np.maximum(bond - 0.05, 0))
@@ -188,19 +225,29 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
             slots[wr, t % 4] = h[wr]
         prev_surprise, prev_bal, prev_bond = surprise, np.abs(bal), bond.copy()
         alive_t += alive; balanced_t += alive & (np.abs(bal) < 0.8)
+        rep_sum += alive * rep
         acts_hist[ar, a] += alive; dist_partner += alive * close
         if t % 16 == 15 and alive.mean() < 0.05:   # early termination: town has collapsed
             break
     # ---- per-genome outcome (facts, not a score) ----
     T = t + 1
-    def agg(x): return x.reshape(G, per_genome).mean(1)
+    def agg(x): return x.reshape(Gt, per_genome)[:G].mean(1)
+    def cagg(x): return x.reshape(Gt, per_genome)[G:].mean()
     tot = np.maximum(acts_hist.sum(1, keepdims=True), 1); af = acts_hist / tot
     out = dict(steps=np.full(G, T),
         births=agg(births), survival=agg(alive_t / T), balanced=agg(balanced_t / np.maximum(alive_t, 1)),
         bond=agg(bond), law_breaks=agg(law_breaks / np.maximum(alive_t, 1)),
         coop=agg(af[:, 4] + af[:, 7]), forage=agg(af[:, 0] + af[:, 2]), sleep=agg(af[:, 3]),
         closeness=agg(dist_partner / np.maximum(alive_t, 1)), rep=agg(rep), tools=agg(tools),
-        surprise=agg(prev_surprise))
+        surprise=agg(prev_surprise),
+        # law-keeping metrics (raw sums per genome so rates can be pooled correctly)
+        promise_opps=agg(p_opps), promise_breaks=agg(p_breaks), encounters=agg(encounters),
+        law_break_events=agg(law_breaks),
+        rep_mean=agg(rep_sum / np.maximum(alive_t, 1)), honesty=agg(honesty(law_breaks, encounters)))
+    if Gc:  # cheater-vs-honest facts, broadcast per genome so shards concatenate
+        cs = dict(cheat_births=cagg(births), cheat_survival=cagg(alive_t / T), cheat_frac=Gc / Gt,
+                  cheat_bond_share=c_bond_with / max(h_bonds, 1), cheat_bonds_lost=c_lost / (Gc * per_genome))
+        for k, v in cs.items(): out[k] = np.full(G, float(v))
     if return_w:
-        out["Win"] = Win.reshape(G, per_genome, H, D_OBS).mean(1); out["Wout"] = Wout.reshape(G, per_genome, N_ACT, H).mean(1)
+        out["Win"] = Win.reshape(Gt, per_genome, H, D_OBS)[:G].mean(1); out["Wout"] = Wout.reshape(Gt, per_genome, N_ACT, H)[:G].mean(1)
     return out

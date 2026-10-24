@@ -11,6 +11,21 @@ KEEP = [0.34, 0.34]
 BINS = 8  # descriptors: cooperation, closeness to partner, law-breaking rate
 DESC = ("coop", "closeness", "law_breaks"); DLO = np.array([0, 0, 0]); DHI = np.array([0.6, 0.6, 0.15])
 
+def law_metrics(o):
+    """World-level law-keeping summary from one generation's final-rung outcomes (pooled over minds)."""
+    from .town import promise_keeping_rate, reputation_gap
+    if "promise_opps" not in o: return None
+    gap = reputation_gap(o["rep_mean"], o["honesty"])
+    pk = promise_keeping_rate(o["promise_breaks"], o["promise_opps"])
+    hon = o["honesty"]; rp = o["rep_mean"]
+    corr = float(np.corrcoef(rp, hon)[0, 1]) if len(hon) > 2 and hon.std() > 0 and rp.std() > 0 else None
+    return dict(promise_keeping=None if pk != pk else round(pk, 5), promise_opps=round(float(o["promise_opps"].sum()), 2),
+                rep_gap_mean=round(float(gap.mean()), 5), rep_gap_abs=round(float(np.abs(gap).mean()), 5),
+                rep_mean=round(float(rp.mean()), 5), honesty=round(float(hon.mean()), 5),
+                rep_honesty_corr=None if corr is None else round(corr, 4), n=int(len(hon)),
+                **{k: round(float(o[k].mean()), 5) for k in o if k.startswith("cheat_")},
+                honest_births=round(float(o["births"].mean()), 5))
+
 def survives(o):  # minimal criterion = stayed alive and balanced (nature's filter, not a score)
     return (o["survival"] > 0.6) & (o["balanced"] > 0.3)
 
@@ -20,14 +35,18 @@ def repro_key(o):  # replacement in a niche: who left more offspring, ties broke
 def _work(args):
     g, env, seed, rung, init_w = args
     os.environ.setdefault("OMP_NUM_THREADS", "1")
-    return run_town(g, env, seed, return_w=True, init_w=init_w, **RUNGS[rung])
+    rg = rung_cfg(env, rung)
+    return run_town(g, env, seed, return_w=True, init_w=init_w, **rg)
+
+def rung_cfg(env, rung):  # 'long' config scales every rung's life length (final rung 192 -> 512 at t_scale 8/3)
+    rg = dict(RUNGS[rung]); rg["T"] = int(round(rg["T"] * env.get("t_scale", 1.0))); return rg
 
 class Genesis:
-    def __init__(self, out, seed=0, workers=None, lamarck=True, batch=1024, shard=128, screen_n=250_000, speed=True):
+    def __init__(self, out, seed=0, workers=None, lamarck=True, batch=1024, shard=128, screen_n=250_000, speed=True, env_overrides=None):
         self.out = out; os.makedirs(out, exist_ok=True); self.rng = np.random.default_rng(seed)
         self.workers = workers or max(1, os.cpu_count() - 1); self.lamarck = lamarck; self.batch = batch
         self.shard = shard; self.screen_n = screen_n; self.speed = speed
-        self.envs = [default_env()]; self.archives = [dict()]  # per env: cell -> record
+        self.envs = [dict(default_env(), **(env_overrides or {}))]; self.archives = [dict()]  # per env: cell -> record
         self.sur = Surrogate(); self.cache = {}; self.gen = 0; self.stats = dict(sim_genomes=0, sim_agent_steps=0, screened=0, cache_hits=0, early_dropped=0)
         self.novel = np.zeros((0, 3)); self.cell_gain = {}; self.t_sim = 0.0; self.t_total = 0.0
 
@@ -54,7 +73,7 @@ class Genesis:
         t = time.time(); res = list(pool.imap(_work, jobs))  # small shards -> idle workers steal the next one
         self.t_sim += time.time() - t
         out = {k: np.concatenate([r[k] for r in res]) for k in res[0]}
-        self.stats["sim_genomes"] += n; self.stats["sim_agent_steps"] += int(n * RUNGS[rung]["T"] * RUNGS[rung]["per_genome"])
+        self.stats["sim_genomes"] += n; rg = rung_cfg(env, rung); self.stats["sim_agent_steps"] += int(n * rg["T"] * rg["per_genome"])
         return out
 
     def propose(self, ei):
@@ -183,10 +202,10 @@ class Genesis:
             rec["archive"] = {name: {str(v): round(float(x), 4) for v, x in zip(vals, np.bincount(allg[:, i], minlength=len(vals)) / len(allg))} for i, (name, vals) in enumerate(GN.AXES)}
         return rec
 
-    def run(self, minutes, log=print):
+    def run(self, minutes, log=print, max_gen=None):
         t_end = time.time() + minutes * 60; t0 = time.time()
         with Pool(self.workers) as pool:
-            while time.time() < t_end:
+            while time.time() < t_end and (max_gen is None or self.gen < max_gen):
                 tg = time.time(); results = []
                 for ei in range(len(self.envs)):
                     results.append(self.step_env(pool, ei))
@@ -202,6 +221,7 @@ class Genesis:
                 births = [float(r["o"]["births"].mean()) for r in results if r]
                 line = dict(gen=self.gen, envs=len(self.envs), archive=[len(a) for a in self.archives], mc_pass=mcs,
                             mean_births_final_rung=[round(b, 3) for b in births], poet=p, transferred=m,
+                            law=[law_metrics(r["o"]) for r in results if r],
                             stats=dict(self.stats), elapsed_s=round(time.time() - t0, 1))
                 log(json.dumps(line, default=float))
                 with open(os.path.join(self.out, "progress.jsonl"), "a") as f: f.write(json.dumps(line, default=float) + "\n")

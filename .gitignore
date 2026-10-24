@@ -17,3 +17,6 @@ REPORT.md
 kaggle.json
 secrets/
 .venv/
+runs/
+__pycache__/
+*.pyc
