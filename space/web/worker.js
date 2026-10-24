@@ -24,6 +24,7 @@ onmessage = async (ev) => {
     const out = py.runPython(`
 import json, js
 a = args.to_py() if hasattr(args, "to_py") else args
+a = demo_core.clamp_args(a.get("generations"), a.get("population"), a.get("seed"))
 res = demo_core.run(a["generations"], a["population"], a["seed"], time_cap=120, on_gen=lambda k, n: js.progress(k, n))
 json.dumps(dict(res=res, md=demo_core.summary_md(res)))`);
     postMessage({ type: "done", data: JSON.parse(out) });
