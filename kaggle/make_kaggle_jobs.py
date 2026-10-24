@@ -15,7 +15,11 @@ os.chdir("/kaggle/working"); tarfile.open(fileobj=io.BytesIO(base64.b64decode("{
 os.makedirs("runs/{n}",exist_ok=True)
 cmd=[sys.executable,"run_box.py","--minutes","680","--max-gen","{g}","--workers","3","--batch","1024","--out","runs/{n}"]+shlex.split("{a}")
 with open("runs/{n}.log","a") as lf: r=subprocess.run(cmd,stdout=lf,stderr=subprocess.STDOUT)
-import pickle; gen=pickle.load(open("runs/{n}/ckpt.pkl","rb"))["gen"]
+sys.path.insert(0, os.getcwd())  # ckpt.pkl pickles genesis.* objects; unpickling needs the extracted package importable
+import pickle
+try: gen=pickle.load(open("runs/{n}/ckpt.pkl","rb"))["gen"]
+except Exception as e:
+    import json as _j; gen=max((_j.loads(l)["gen"] for l in open("runs/{n}/progress.jsonl")), default=0); print("ckpt read failed, using progress.jsonl:",e)
 if gen>={g}: open("runs/{n}/DONE","w").close()
 print("{n} finished gen",gen,"rc",r.returncode)
 '''

@@ -24,8 +24,7 @@ search with successive halving). This uses the exact engine code from the
 [GENESIS repo](https://github.com/guajardoblake/genesis) (Apache-2.0).
 
 **Honest limits.** This is a *toy world*. A demo run is tiny (a few generations, a small population, one random seed)
-and results vary from run to run. Nothing here is evidence about AGI or about real-world AI safety. The full research
-runs are far larger and still early: one seed so far, with promise-keeping and reputation-gap metrics still being added.
+and results vary from run to run. Nothing here is evidence about AGI or about real-world AI safety. The full research runs (Oct 2026) cover 10 seeds with a matching no-reputation control. Averaged over all 6 worlds, every seed was more law-abiding with reputation (generations 81-100), but in the starting world alone 2 of 10 seeds went the other way. In a cheater test (10 seeds), cheaters had about 27x fewer offspring than honest agents, yet they were never excluded from partnerships, so the agents don't actually detect cheaters yet.
 """
 
 def run_demo(generations, population, seed, progress=gr.Progress()):
