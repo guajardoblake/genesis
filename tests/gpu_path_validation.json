@@ -1,110 +1,110 @@
 {
  "default/births": {
-  "numpy": 0.0173,
-  "gpu_path": 0.0199,
-  "p": 0.593,
-  "cohen_d": 0.183
+  "numpy": 0.0176,
+  "gpu_path": 0.0254,
+  "p": 0.74,
+  "cohen_d": 0.475
  },
  "default/survival": {
-  "numpy": 0.8172,
-  "gpu_path": 0.8139,
-  "p": 0.518,
-  "cohen_d": -0.192
+  "numpy": 0.8188,
+  "gpu_path": 0.8108,
+  "p": 0.576,
+  "cohen_d": -0.429
  },
  "default/balanced": {
-  "numpy": 0.2878,
-  "gpu_path": 0.2905,
-  "p": 0.483,
-  "cohen_d": 0.203
+  "numpy": 0.2875,
+  "gpu_path": 0.2923,
+  "p": 0.645,
+  "cohen_d": 0.468
  },
  "default/honesty": {
-  "numpy": 0.7526,
-  "gpu_path": 0.7515,
-  "p": 0.702,
-  "cohen_d": -0.115
+  "numpy": 0.7534,
+  "gpu_path": 0.7524,
+  "p": 0.866,
+  "cohen_d": -0.153
  },
  "default/law_breaks": {
-  "numpy": 0.0464,
-  "gpu_path": 0.0467,
-  "p": 0.664,
-  "cohen_d": 0.127
+  "numpy": 0.046,
+  "gpu_path": 0.0465,
+  "p": 0.597,
+  "cohen_d": 0.459
  },
  "default/coop": {
-  "numpy": 0.2539,
-  "gpu_path": 0.2526,
-  "p": 0.513,
-  "cohen_d": -0.198
+  "numpy": 0.2614,
+  "gpu_path": 0.2577,
+  "p": 0.657,
+  "cohen_d": -0.439
  },
  "default/rep_mean": {
-  "numpy": 0.2712,
-  "gpu_path": 0.2682,
-  "p": 0.266,
-  "cohen_d": -0.326
+  "numpy": 0.2706,
+  "gpu_path": 0.2685,
+  "p": 0.742,
+  "cohen_d": -0.214
  },
  "default/bond": {
-  "numpy": 0.0138,
-  "gpu_path": 0.0116,
-  "p": 0.365,
-  "cohen_d": -0.27
+  "numpy": 0.0159,
+  "gpu_path": 0.012,
+  "p": 0.681,
+  "cohen_d": -0.374
  },
  "default/tools": {
   "numpy": 0.0016,
-  "gpu_path": 0.001,
-  "p": 0.042,
-  "cohen_d": -0.62
+  "gpu_path": 0.0012,
+  "p": 0.748,
+  "cohen_d": -0.422
  },
  "cheaters0.1/births": {
-  "numpy": 0.0176,
-  "gpu_path": 0.0133,
-  "p": 0.244,
-  "cohen_d": -0.355
+  "numpy": 0.0146,
+  "gpu_path": 0.0195,
+  "p": 0.709,
+  "cohen_d": 0.404
  },
  "cheaters0.1/survival": {
-  "numpy": 0.7733,
-  "gpu_path": 0.7689,
-  "p": 0.356,
-  "cohen_d": -0.277
+  "numpy": 0.7754,
+  "gpu_path": 0.7656,
+  "p": 0.596,
+  "cohen_d": -0.475
  },
  "cheaters0.1/balanced": {
-  "numpy": 0.2906,
-  "gpu_path": 0.2921,
-  "p": 0.656,
-  "cohen_d": 0.146
+  "numpy": 0.2898,
+  "gpu_path": 0.2984,
+  "p": 0.477,
+  "cohen_d": 0.788
  },
  "cheaters0.1/honesty": {
-  "numpy": 0.7495,
-  "gpu_path": 0.748,
-  "p": 0.587,
-  "cohen_d": -0.162
+  "numpy": 0.7519,
+  "gpu_path": 0.7444,
+  "p": 0.389,
+  "cohen_d": -0.71
  },
  "cheaters0.1/law_breaks": {
-  "numpy": 0.0467,
-  "gpu_path": 0.0469,
-  "p": 0.748,
-  "cohen_d": 0.096
+  "numpy": 0.0454,
+  "gpu_path": 0.0462,
+  "p": 0.502,
+  "cohen_d": 0.479
  },
  "cheaters0.1/coop": {
-  "numpy": 0.2543,
-  "gpu_path": 0.2532,
-  "p": 0.554,
-  "cohen_d": -0.178
+  "numpy": 0.2582,
+  "gpu_path": 0.2513,
+  "p": 0.179,
+  "cohen_d": -1.339
  },
  "cheaters0.1/rep_mean": {
-  "numpy": 0.2784,
-  "gpu_path": 0.2779,
-  "p": 0.838,
-  "cohen_d": -0.06
+  "numpy": 0.2782,
+  "gpu_path": 0.2794,
+  "p": 0.861,
+  "cohen_d": 0.108
  },
  "cheaters0.1/bond": {
-  "numpy": 0.0108,
-  "gpu_path": 0.0099,
-  "p": 0.639,
-  "cohen_d": -0.133
+  "numpy": 0.0094,
+  "gpu_path": 0.0087,
+  "p": 0.89,
+  "cohen_d": -0.122
  },
  "cheaters0.1/tools": {
-  "numpy": 0.0012,
-  "gpu_path": 0.0012,
-  "p": 0.914,
-  "cohen_d": 0.032
+  "numpy": 0.001,
+  "gpu_path": 0.001,
+  "p": 0.975,
+  "cohen_d": 0.061
  }
 }

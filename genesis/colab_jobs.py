@@ -134,11 +134,12 @@ def render(drive):
     print("rendered", os.path.join(drive, "phase_diagram.png"), int(cnt.sum()), "runs")
 
 # ---------------- Job B: scale-up ----------------
+TOWN = int(os.environ.get("GENESIS_TOWN", 128))   # genomes per town = engine's CPU shard: the published runs' crowding/food per mind
 def _gpu_work(args, xp=None):
     from genesis.engine import rung_cfg
     from genesis import town_xp
     g, env, seed, rung, init_w = args
-    return town_xp.run_town(g, env, seed, return_w=True, init_w=init_w, xp=xp, **rung_cfg(env, rung))
+    return town_xp.run_town(g, env, seed, return_w=True, init_w=init_w, xp=xp, town_size=TOWN, **rung_cfg(env, rung))
 
 def scale(drive, hours, tiny=False, seed=0, cheaters=0.1):
     from genesis import engine, town_xp
@@ -155,6 +156,14 @@ def scale(drive, hours, tiny=False, seed=0, cheaters=0.1):
     for f in ("ckpt.pkl", "progress.jsonl", "lineage.jsonl", "plan.json"):   # Drive -> local on resume
         if os.path.exists(os.path.join(drive, f)) and not os.path.exists(os.path.join(local, f)): shutil.copy(os.path.join(drive, f), local)
     plan_f = os.path.join(local, "plan.json"); ov = dict(cheaters=cheaters) if cheaters else {}
+    if os.path.exists(plan_f) and json.load(open(plan_f)).get("town_size") != TOWN:
+        # v1 plan put all GPU minds in ONE town (overcrowded, food < 0, births ~0): never resume it
+        old = os.path.join(drive, f"_invalid_onetown_{int(time.time())}"); os.makedirs(old, exist_ok=True)
+        for f in ("ckpt.pkl", "progress.jsonl", "lineage.jsonl", "plan.json"):
+            for d in (local, drive):
+                q = os.path.join(d, f)
+                if os.path.exists(q): shutil.move(q, os.path.join(old, f"{os.path.basename(d)}_{f}"))
+        log(L, f"old one-town plan/checkpoint moved to {old}; starting fresh with towns of {TOWN} genomes")
     if os.path.exists(plan_f): plan = json.load(open(plan_f)); log(L, f"resume plan {plan}")
     else:
         # benchmark: one generation at two sizes -> linear cost model -> biggest population with >= target gens
@@ -163,7 +172,7 @@ def scale(drive, hours, tiny=False, seed=0, cheaters=0.1):
             g = engine.Genesis(d, seed=seed, batch=batch, shard=shard, workers=(1 if gi else os.cpu_count()), env_overrides=ov)
             t = time.time(); g.run(1e9, max_gen=2, log=lambda s: None); dt = (time.time() - t) / 2; shutil.rmtree(d, ignore_errors=True); return dt
         b1, b2 = (64, 128) if tiny else (1024, 4096)
-        sh = lambda b: (b if gi else 128)          # GPU: one big town per shard call; CPU: base town size
+        sh = lambda b: (b if gi else 128)          # GPU: one call per generation, split inside into independent towns of TOWN genomes
         t1, t2 = bench(b1, sh(b1)), bench(b2, sh(b2)); slope = max((t2 - t1) / (b2 - b1), 1e-6); icpt = max(t1 - slope * b1, 0.0)
         avail = hours * 3600 - (time.time() - t_start) - min(900, 0.1 * hours * 3600)   # 15 min margin for final save/sync
         target_gens = 3 if tiny else 100
@@ -178,7 +187,7 @@ def scale(drive, hours, tiny=False, seed=0, cheaters=0.1):
             if gens >= target_gens and mind_gb < mem_gb: best = b
         gens = int(avail / ((icpt + slope * best) * ENVF) * 0.85)
         plan = dict(batch=best, shard=sh(best), gens=max(gens, 1), seed=seed, cheaters=cheaters, device=(gi["name"] if gi else "cpu"),
-                    bench=dict(b1=b1, t1=round(t1, 2), b2=b2, t2=round(t2, 2)), est_hours=round(gens * (icpt + slope * best) * ENVF / 3600, 2),
+                    town_size=TOWN, bench=dict(b1=b1, t1=round(t1, 2), b2=b2, t2=round(t2, 2)), est_hours=round(gens * (icpt + slope * best) * ENVF / 3600, 2),
                     baseline_batch=1024, scale_x=round(best / 1024, 1))
         json.dump(plan, open(plan_f, "w")); log(L, f"plan {plan}")
     ck = os.path.join(local, "ckpt.pkl")

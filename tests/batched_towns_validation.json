@@ -1,0 +1,76 @@
+{
+ "rung0": {
+  "births": {
+   "cpu": 0.01112,
+   "batched": 0.01215,
+   "p": 0.4044
+  },
+  "survival": {
+   "cpu": 0.99455,
+   "batched": 0.99471,
+   "p": 0.4776
+  },
+  "honesty": {
+   "cpu": 0.74192,
+   "batched": 0.74595,
+   "p": 0.0252
+  },
+  "rep_mean": {
+   "cpu": 0.38548,
+   "batched": 0.38688,
+   "p": 0.1212
+  },
+  "bond": {
+   "cpu": 0.09844,
+   "batched": 0.10022,
+   "p": 0.4666
+  },
+  "cheat_births": {
+   "cpu": 0.0016,
+   "batched": 0.00214,
+   "p": 0.6281
+  },
+  "cheat_survival": {
+   "cpu": 0.99991,
+   "batched": 0.99972,
+   "p": 0.118
+  }
+ },
+ "rung2": {
+  "births": {
+   "cpu": 0.01485,
+   "batched": 0.01538,
+   "p": 0.5394
+  },
+  "survival": {
+   "cpu": 0.4459,
+   "batched": 0.44627,
+   "p": 0.7196
+  },
+  "honesty": {
+   "cpu": 0.75064,
+   "batched": 0.75083,
+   "p": 0.7846
+  },
+  "rep_mean": {
+   "cpu": 0.26849,
+   "batched": 0.26855,
+   "p": 0.9255
+  },
+  "bond": {
+   "cpu": 0.00045,
+   "batched": 0.00041,
+   "p": 0.6136
+  },
+  "cheat_births": {
+   "cpu": 0.00552,
+   "batched": 0.00543,
+   "p": 0.979
+  },
+  "cheat_survival": {
+   "cpu": 0.91442,
+   "batched": 0.91466,
+   "p": 0.9528
+  }
+ }
+}

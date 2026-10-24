@@ -29,7 +29,9 @@ def _sub_at(xp, a, idx, v):
 def honesty(law_breaks, encounters, xp=np):
     return 1.0 - xp.asarray(law_breaks, float) / xp.maximum(xp.asarray(encounters, float), 1.0)
 
-def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False, xp=None):
+def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False, xp=None, town_size=None):
+    """town_size: split the genomes into independent towns of <= town_size genomes (like engine shards),
+    each with its own world/food grid, neighbours and cheaters, simulated together in one vectorized pass."""
     xp = np if xp is None else xp
     rng = _rng(xp, seed)
     LR, DECAY, HOR, HID, SGAIN, PPW, EXPL, TSENS, LOVE_BAL, LOVE_REP = (xp.asarray(c) for c in (_C.LR, _C.DECAY, _C.HOR, _C.HID, _C.SGAIN, _C.PPW, _C.EXPL, _C.TSENS, _C.LOVE_BAL, _C.LOVE_REP))
@@ -38,15 +40,26 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
     G = genomes.shape[0]
     # experiment switches (absent = default town; defaults leave dynamics bit-identical)
     use_love = env.get("love", True); use_rep = env.get("reputation", True); cfrac = env.get("cheaters", 0.0)
-    Gc = int(xp.ceil(G * cfrac)) if cfrac > 0 else 0
+    ts_ = G if not town_size else int(town_size)
+    Gs = [min(ts_, G - i) for i in range(0, G, ts_)]; nT = len(Gs)          # honest genomes per town
+    Gcs = [int(np.ceil(x * cfrac)) if cfrac > 0 else 0 for x in Gs]; Gc = sum(Gcs)
     if Gc:  # cheaters: extra random-genome minds that steal/harm in reach and FAKE a high reputation
         crng = _rng(xp, seed + 99991)       # separate stream: never touches the main RNG
-        genomes = xp.concatenate([genomes, (crng.random((Gc, genomes.shape[1])) * xp.array([len(a[1]) for a in AXES])).astype(genomes.dtype)])
+        cg = (crng.random((Gc, genomes.shape[1])) * xp.array([len(a[1]) for a in AXES])).astype(genomes.dtype)
+        parts, wparts, o, oc = [], [], 0, 0
+        for x, xc in zip(Gs, Gcs):   # per town: its honest genomes, then its cheaters
+            parts += [genomes[o:o + x], cg[oc:oc + xc]]
+            if init_w is not None: wparts.append((slice(o, o + x), xc))
+            o += x; oc += xc
+        genomes = xp.concatenate(parts)
         if init_w is not None:
-            init_w = dict(mask=xp.concatenate([init_w["mask"], xp.zeros(Gc, bool)]),
-                          Win=xp.concatenate([init_w["Win"], xp.zeros((Gc,) + init_w["Win"].shape[1:], init_w["Win"].dtype)]),
-                          Wout=xp.concatenate([init_w["Wout"], xp.zeros((Gc,) + init_w["Wout"].shape[1:], init_w["Wout"].dtype)]))
+            z = lambda k, xc: xp.zeros((xc,) + init_w[k].shape[1:], init_w[k].dtype)
+            init_w = {k: xp.concatenate(sum([[init_w[k][sl], z(k, xc)] for sl, xc in wparts], [])) for k in ("mask", "Win", "Wout")}
     Gt = G + Gc; B = Gt * per_genome
+    gtown = np.repeat(np.arange(nT), [x + xc for x, xc in zip(Gs, Gcs)])                    # town of each genome
+    gch = np.concatenate([np.r_[np.zeros(x, bool), np.ones(xc, bool)] for x, xc in zip(Gs, Gcs)])
+    Bt_np = np.array([(x + xc) * per_genome for x, xc in zip(Gs, Gcs)]); base_np = np.r_[0, np.cumsum(Bt_np)[:-1]]
+    tid = xp.asarray(np.repeat(gtown, per_genome)); Bt_m = xp.asarray(Bt_np)[tid]; base_m = xp.asarray(base_np)[tid]
     gid = xp.repeat(xp.arange(Gt), per_genome); g = genomes[gid]
     rule, mem_t, nmod, love = g[:, 0], g[:, 2], g[:, 11], g[:, 7]
     lr, dec, hor = LR[g[:, 1]], DECAY[g[:, 3]], HOR[g[:, 4]]
@@ -54,10 +67,10 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
     hmask = (xp.arange(H)[None, :] < HID[g[:, 5]][:, None]).astype(xp.float32)
     lb, lrp = LOVE_BAL[love], LOVE_REP[love]
     if not use_love: lb, lrp = lb * 0, lrp * 0          # ablation: bond never enters balance or reproduction drive
-    ch = gid >= G; c_bond_with = 0.0; h_bonds = 0.0; c_lost = 0.0; FAKE = 0.9
+    ch = xp.asarray(np.repeat(gch, per_genome)); c_bond_with = xp.zeros(nT); h_bonds = xp.zeros(nT); c_lost = xp.zeros(nT); FAKE = 0.9
     L = env["size"]; GR = 12
     # --- world ---
-    food = xp.full((GR, GR), 0.5)
+    food = xp.full((nT, GR, GR), 0.5)
     # --- bodies (physiology is real in every run) ---
     pos = rng.random((B, 2)) * L
     energy = xp.full(B, 1.0); fatigue = xp.zeros(B); pain = xp.zeros(B); temp = xp.zeros(B)
@@ -82,13 +95,15 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
     ar = xp.arange(B)
     rnoise = float(env.get("rep_noise", 0.0)); nrng = _rng(xp, seed + 7777) if rnoise > 0 else None
     rpen = float(env.get("rep_penalty", 1.0))
+    run_t = xp.ones(nT, bool); run_m = run_t[tid]; Tt = xp.full(nT, T)
+    snap_b, snap_r, snap_t, snap_s = bond, rep, tools, prev_surprise
     for t in range(T):
         day = xp.sin(2 * xp.pi * t / 24)
         amb = env["temp_amp"] * day - env["cold_night"] * (day < 0)
         cell = xp.clip((pos / L * GR).astype(int), 0, GR - 1)
-        fhere = food[cell[:, 0], cell[:, 1]]
+        fhere = food[tid, cell[:, 0], cell[:, 1]]
         # nearest other living mind (sampled neighbours for O(B*K))
-        K = 8; cand = rng.integers(0, B, (B, K))
+        K = 8; cand = rng.integers(0, B, (B, K)) if nT == 1 else base_m[:, None] + xp.minimum((rng.random((B, K)) * Bt_m[:, None]).astype(int), Bt_m[:, None] - 1)
         if t % 4 == 0 or t == 0:
             cand[:, 0] = xp.where(partner >= 0, partner, cand[:, 0])
         d = pos[cand] - pos[:, None]; d = (d + L / 2) % L - L / 2
@@ -136,8 +151,8 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         # ---- act on world ----
         mv = xp.zeros((B, 2))
         to_food = a == 0
-        gx = xp.stack([food[(cell[:, 0] + 1) % GR, cell[:, 1]] - food[(cell[:, 0] - 1) % GR, cell[:, 1]],
-                       food[cell[:, 0], (cell[:, 1] + 1) % GR] - food[cell[:, 0], (cell[:, 1] - 1) % GR]], 1)
+        gx = xp.stack([food[tid, (cell[:, 0] + 1) % GR, cell[:, 1]] - food[tid, (cell[:, 0] - 1) % GR, cell[:, 1]],
+                       food[tid, cell[:, 0], (cell[:, 1] + 1) % GR] - food[tid, cell[:, 0], (cell[:, 1] - 1) % GR]], 1)
         mv[to_food] = gx[to_food] * 4 + rng.normal(0, 0.5, (int(to_food.sum()), 2))
         to_o = (a == 1) | (a == 7)
         tgt = xp.where((a == 7) & haspart, pp, near)
@@ -147,7 +162,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         energy -= 0.02 + 0.01 * (xp.abs(mv).sum(1) > 0)
         eat = (a == 2) & alive
         harvest = xp.minimum(fhere, 0.15 * (0.5 + rep + 0.5 * tools)) * eat   # trust earns resources/tools
-        energy += harvest; _sub_at(xp, food, (cell[:, 0], cell[:, 1]), harvest * 0.5)
+        energy += harvest; _sub_at(xp, food, (tid, cell[:, 0], cell[:, 1]), harvest * 0.5)
         sl = (a == 3) & alive
         fatigue = xp.where(sl, fatigue * 0.6, fatigue + 0.03)
         inreach = nd < 2.0
@@ -167,7 +182,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         broke_promise = broke & promise & (near == partner)
         rep = xp.clip(rep - 0.1 * broke - 0.2 * broke_promise, 0, 1) if rpen == 1.0 else xp.clip(rep - rpen * (0.1 * broke + 0.2 * broke_promise), 0, 1)
         lost = broke & (near == partner)
-        if Gc: c_lost += float((lost & ch).sum())
+        if Gc: c_lost += xp.bincount(tid, (lost & ch).astype(float), minlength=nT)
         if not use_rep: rep = xp.full(B, 0.5)               # ablation: no reputation signal at all
         if Gc: rep = xp.where(ch, FAKE, rep)                 # cheaters' reputation is faked high
         bond = xp.where(lost, 0, bond); 
@@ -182,7 +197,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         pi, pj = pi[ok], pj[ok]
         _, u = xp.unique(pj, return_index=True); pi, pj = pi[u], pj[u]
         ok2 = ~xp.isin(pi, pj); pi, pj = pi[ok2], pj[ok2]
-        if Gc: hb = ~ch[pi] | ~ch[pj]; h_bonds += float(hb.sum()); c_bond_with += float((hb & (ch[pi] | ch[pj])).sum())
+        if Gc: hb = ~ch[pi] | ~ch[pj]; h_bonds += xp.bincount(tid[pi], hb.astype(float), minlength=nT); c_bond_with += xp.bincount(tid[pi], (hb & (ch[pi] | ch[pj])).astype(float), minlength=nT)
         partner[pi] = pj; partner[pj] = pi; promise[pi] = True; promise[pj] = True
         haspart = partner >= 0
         bond = xp.where(haspart, xp.clip(bond + 0.05 * close + 0.02 * share, 0, 1), xp.maximum(bond - 0.05, 0))
@@ -234,14 +249,31 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         alive_t += alive; balanced_t += alive & (xp.abs(bal) < 0.8)
         rep_sum += alive * rep
         acts_hist[ar, a] += alive; dist_partner += alive * close
-        if t % 16 == 15 and alive.mean() < 0.05:   # early termination: town has collapsed
-            break
+        if nT == 1:
+            if t % 16 == 15 and alive.mean() < 0.05:   # early termination: town has collapsed
+                break
+        else:
+            snap_b = xp.where(run_m, bond, snap_b); snap_r = xp.where(run_m, rep, snap_r)
+            snap_t = xp.where(run_m, tools, snap_t); snap_s = xp.where(run_m, prev_surprise, snap_s)
+            if t % 16 == 15:   # a collapsed town stops (frozen: its minds no longer act or count)
+                am = xp.bincount(tid, alive.astype(float), minlength=nT) / xp.asarray(Bt_np)
+                stop = run_t & (am < 0.05); Tt = xp.where(stop, t + 1, Tt); run_t = run_t & ~stop
+                run_m = run_t[tid]; alive = alive & run_m
+                if not bool(run_t.any()): break
     # ---- per-genome outcome (facts, not a score) ----
     T = t + 1
-    def agg(x): x = _np(xp, x); return x.reshape(Gt, per_genome)[:G].mean(1)
-    def cagg(x): x = _np(xp, x); return x.reshape(Gt, per_genome)[G:].mean()
+    if nT > 1:
+        bond, rep, tools, prev_surprise = snap_b, snap_r, snap_t, snap_s
+        Tt = xp.where(run_t, T, Tt); T = Tt[tid]                     # per-mind steps of its own town
+    hon_g = ~gch
+    def agg(x): x = _np(xp, x); return x.reshape(Gt, per_genome)[hon_g].mean(1)
+    gt_h = gtown[hon_g]
+    def cagg(x):  # per-town cheater mean, broadcast to that town's honest genomes
+        x = _np(xp, x).reshape(Gt, per_genome).mean(1); m = np.bincount(gtown[gch], x[gch], minlength=nT) / np.maximum(np.bincount(gtown[gch], minlength=nT), 1)
+        return m[gt_h]
+    T_out = _np(xp, Tt)[gt_h] if nT > 1 else np.full(G, T)
     tot = xp.maximum(acts_hist.sum(1, keepdims=True), 1); af = acts_hist / tot
-    out = dict(steps=xp.full(G, T),
+    out = dict(steps=T_out,
         births=agg(births), survival=agg(alive_t / T), balanced=agg(balanced_t / xp.maximum(alive_t, 1)),
         bond=agg(bond), law_breaks=agg(law_breaks / xp.maximum(alive_t, 1)),
         coop=agg(af[:, 4] + af[:, 7]), forage=agg(af[:, 0] + af[:, 2]), sleep=agg(af[:, 3]),
@@ -252,9 +284,11 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         law_break_events=agg(law_breaks),
         rep_mean=agg(rep_sum / xp.maximum(alive_t, 1)), honesty=agg(honesty(law_breaks, encounters, xp)))
     if Gc:  # cheater-vs-honest facts, broadcast per genome so shards concatenate
-        cs = dict(cheat_births=cagg(births), cheat_survival=cagg(alive_t / T), cheat_frac=Gc / Gt,
-                  cheat_bond_share=c_bond_with / max(h_bonds, 1), cheat_bonds_lost=c_lost / (Gc * per_genome))
-        for k, v in cs.items(): out[k] = xp.full(G, float(v))
+        Gcs_a = np.array(Gcs); Gts_a = np.array(Gs) + Gcs_a
+        cs = dict(cheat_births=cagg(births), cheat_survival=cagg(alive_t / T), cheat_frac=(Gcs_a / Gts_a)[gt_h],
+                  cheat_bond_share=(_np(xp, c_bond_with) / np.maximum(_np(xp, h_bonds), 1))[gt_h],
+                  cheat_bonds_lost=(_np(xp, c_lost) / np.maximum(Gcs_a * per_genome, 1))[gt_h])
+        for k, v in cs.items(): out[k] = np.asarray(v, float)
     if return_w:
-        out["Win"] = _np(xp, Win).reshape(Gt, per_genome, H, D_OBS)[:G].mean(1); out["Wout"] = _np(xp, Wout).reshape(Gt, per_genome, N_ACT, H)[:G].mean(1)
+        out["Win"] = _np(xp, Win).reshape(Gt, per_genome, H, D_OBS)[hon_g].mean(1); out["Wout"] = _np(xp, Wout).reshape(Gt, per_genome, N_ACT, H)[hon_g].mean(1)
     return {k: _np(xp, v) if not isinstance(v, np.ndarray) else v for k, v in out.items()}
