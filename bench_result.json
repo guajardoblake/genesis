@@ -1,0 +1,16 @@
+{
+ "baseline_full_life_1core_genomes_per_h": 963774.6060224965,
+ "rung0_1core_genomes_per_h": 13863801.82879482,
+ "rung1_1core_genomes_per_h": 2575570.6819134327,
+ "rung2_1core_genomes_per_h": 1337067.6388772628,
+ "rung0_7workers_genomes_per_h": 46971475.03341677,
+ "rung1_7workers_genomes_per_h": 11798326.57472461,
+ "rung2_7workers_genomes_per_h": 4826072.774631735,
+ "halving_candidates_triaged_per_h": 13502495.055529652,
+ "surrogate_screens_per_h": 1164690822.0832775,
+ "hours_for_10M_surrogate_screens": 0.008585969607035318,
+ "hours_for_10M_triaged_sim_candidates": 0.740603863128594,
+ "speedup_triage_vs_baseline": 14.01001330721353,
+ "speedup_full_life_parallel_vs_baseline": 5.007470361300518,
+ "speedup_screening_vs_baseline": 1208.468053427931
+}
