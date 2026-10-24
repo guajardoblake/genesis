@@ -1,0 +1,110 @@
+{
+ "default/births": {
+  "numpy": 0.0173,
+  "gpu_path": 0.0199,
+  "p": 0.593,
+  "cohen_d": 0.183
+ },
+ "default/survival": {
+  "numpy": 0.8172,
+  "gpu_path": 0.8139,
+  "p": 0.518,
+  "cohen_d": -0.192
+ },
+ "default/balanced": {
+  "numpy": 0.2878,
+  "gpu_path": 0.2905,
+  "p": 0.483,
+  "cohen_d": 0.203
+ },
+ "default/honesty": {
+  "numpy": 0.7526,
+  "gpu_path": 0.7515,
+  "p": 0.702,
+  "cohen_d": -0.115
+ },
+ "default/law_breaks": {
+  "numpy": 0.0464,
+  "gpu_path": 0.0467,
+  "p": 0.664,
+  "cohen_d": 0.127
+ },
+ "default/coop": {
+  "numpy": 0.2539,
+  "gpu_path": 0.2526,
+  "p": 0.513,
+  "cohen_d": -0.198
+ },
+ "default/rep_mean": {
+  "numpy": 0.2712,
+  "gpu_path": 0.2682,
+  "p": 0.266,
+  "cohen_d": -0.326
+ },
+ "default/bond": {
+  "numpy": 0.0138,
+  "gpu_path": 0.0116,
+  "p": 0.365,
+  "cohen_d": -0.27
+ },
+ "default/tools": {
+  "numpy": 0.0016,
+  "gpu_path": 0.001,
+  "p": 0.042,
+  "cohen_d": -0.62
+ },
+ "cheaters0.1/births": {
+  "numpy": 0.0176,
+  "gpu_path": 0.0133,
+  "p": 0.244,
+  "cohen_d": -0.355
+ },
+ "cheaters0.1/survival": {
+  "numpy": 0.7733,
+  "gpu_path": 0.7689,
+  "p": 0.356,
+  "cohen_d": -0.277
+ },
+ "cheaters0.1/balanced": {
+  "numpy": 0.2906,
+  "gpu_path": 0.2921,
+  "p": 0.656,
+  "cohen_d": 0.146
+ },
+ "cheaters0.1/honesty": {
+  "numpy": 0.7495,
+  "gpu_path": 0.748,
+  "p": 0.587,
+  "cohen_d": -0.162
+ },
+ "cheaters0.1/law_breaks": {
+  "numpy": 0.0467,
+  "gpu_path": 0.0469,
+  "p": 0.748,
+  "cohen_d": 0.096
+ },
+ "cheaters0.1/coop": {
+  "numpy": 0.2543,
+  "gpu_path": 0.2532,
+  "p": 0.554,
+  "cohen_d": -0.178
+ },
+ "cheaters0.1/rep_mean": {
+  "numpy": 0.2784,
+  "gpu_path": 0.2779,
+  "p": 0.838,
+  "cohen_d": -0.06
+ },
+ "cheaters0.1/bond": {
+  "numpy": 0.0108,
+  "gpu_path": 0.0099,
+  "p": 0.639,
+  "cohen_d": -0.133
+ },
+ "cheaters0.1/tools": {
+  "numpy": 0.0012,
+  "gpu_path": 0.0012,
+  "p": 0.914,
+  "cohen_d": 0.032
+ }
+}

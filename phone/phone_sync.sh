@@ -36,6 +36,7 @@ once(){
   rm -rf runs/phone_pull; mkdir -p runs/phone_pull
   if timeout 400 scp -q -r -S /home/box/.local/bin/ssh -F $PL/ssh_config phone:/sdcard/gxq/out runs/phone_pull/ 2>>$LOG; then
     for d in runs/phone_pull/out/*/; do n=$(basename $d); [ "$n" = phone_s5_cheat10 ] && continue
+      grep -qx "$n" runs/KAGGLE_OWNED 2>/dev/null && [ -f runs/$n/KAGGLE_RESULT ] && continue
       mkdir -p runs/$n; cp -p $d/* runs/$n/; done; cp runs/phone_pull/out/guard3.log runs/phone_guard3.log 2>/dev/null
   else lg "pull failed"; fi
   Q=$(echo "$ST" | sed -n '3,/^===$/p' | cut -d: -f1)
@@ -46,7 +47,9 @@ once(){
 import os
 ns = {}; exec(open("run_parallel.py").read().split("def live")[0], ns)
 own=open("runs/PHONE_OWNED").read().split(); q=open("/tmp/phone_q.txt").read().split()
+kag=open("runs/KAGGLE_OWNED").read().split() if os.path.exists("runs/KAGGLE_OWNED") else []
 for n,g,a in ns["J"]:
+    if n in kag: continue  # handed to Kaggle, never re-push to phone
     if n in own and n not in q and not os.path.exists(f"runs/{n}/DONE") and n!="cheat_seed5": print(f"{n}:{g}:{a}")
 PY
   while read -r M; do [ -n "$M" ] && priv "grep -q '^${M%%:*}:' $G/q/queue.txt || echo '$M' >> $G/q/queue.txt; echo ok" >/dev/null && lg "re-pushed $M"; done < /tmp/phone_missing.txt
@@ -59,6 +62,7 @@ print(sum(1 for n in q if n not in run and n not in done))")
     J=$(claim); [ -z "$J" ] && break
     priv "echo '$J' >> $G/q/queue.txt; echo ok" | grep -q ok && lg "claimed $J" || lg "claimed $J (push unconfirmed; reconcile next pass)"; PEND=$((PEND+1))
   done
+  for K in $(cat runs/KAGGLE_OWNED 2>/dev/null); do [ -f runs/$K/DONE ] && continue; echo "$ST" | grep -q "^$K:" && priv "sed -i '/^$K:/d' $G/q/queue.txt; echo ok" | grep -q ok && lg "dequeued $K (Kaggle owns it)"; done
   lg "sync ok: $(echo "$ST" | sed -n 2p)"
 }
 [ "$1" = once ] && { once; exit; }
