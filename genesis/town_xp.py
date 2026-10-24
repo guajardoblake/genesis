@@ -13,14 +13,19 @@ class _CupyRng:
     def integers(self, lo, hi, size=None): return self.r.randint(lo, hi, size)
 def _rng(xp, seed): return np.random.default_rng(seed) if xp is np else _CupyRng(xp, seed)
 def _np(xp, x): return x if xp is np else xp.asnumpy(x)
+def _sa(xp):
+    f = getattr(xp, "_scatter_add", None)
+    if f is None:
+        import cupyx; f = cupyx.scatter_add
+    return f
 def _add_at(xp, a, idx, v):
     if xp is np: np.add.at(a, idx, v)
     else:
-        import cupyx; cupyx.scatter_add(a, idx, xp.asarray(v, a.dtype))
+        _sa(xp)(a, idx, xp.asarray(v, a.dtype))
 def _sub_at(xp, a, idx, v):
     if xp is np: np.subtract.at(a, idx, v)
     else:
-        import cupyx; cupyx.scatter_add(a, idx, -xp.asarray(v, a.dtype))
+        _sa(xp)(a, idx, -xp.asarray(v, a.dtype))
 def honesty(law_breaks, encounters, xp=np):
     return 1.0 - xp.asarray(law_breaks, float) / xp.maximum(xp.asarray(encounters, float), 1.0)
 

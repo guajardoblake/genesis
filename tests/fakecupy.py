@@ -6,5 +6,4 @@ for k in dir(np):
     if not k.startswith("__"): setattr(cp, k, getattr(np, k))
 cp.random = types.SimpleNamespace(RandomState=np.random.RandomState)
 cp.asnumpy = lambda x: np.asarray(x)
-cx = types.ModuleType("cupyx"); cx.scatter_add = lambda a, idx, v: np.add.at(a, idx, v)
-sys.modules["cupyx"] = cx
+cp._scatter_add = lambda a, idx, v: np.add.at(a, idx, v)   # used by town_xp._sa; never shadows real cupyx
