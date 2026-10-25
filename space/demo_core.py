@@ -11,7 +11,19 @@ SHOW_AXES = ["love_wiring", "exploration", "memory_type"]
 class LocalPool:  # the engine only needs .imap
     def imap(self, f, jobs): return map(f, jobs)
 
+def _int(x, lo, hi, d):
+    try:
+        v = float(x)
+        if v != v or v in (float("inf"), float("-inf")): return d
+        return int(min(hi, max(lo, round(v))))
+    except (TypeError, ValueError): return d
+
+def clamp_args(generations, population, seed):
+    p = _int(population, 64, 256, 128)
+    return dict(generations=_int(generations, 2, 40, 15), population=p if p in (64, 128, 256) else 128, seed=_int(seed, 0, 999999, 0))
+
 def run(generations=20, population=256, seed=0, time_cap=75.0, on_gen=None):
+    a = clamp_args(generations, population, seed); generations, population, seed = a["generations"], a["population"], a["seed"]
     out = tempfile.mkdtemp(prefix="genesis_demo_")
     g = E.Genesis(out, seed=int(seed), workers=1, batch=int(population), shard=max(16, int(population) // 4), screen_n=20_000)
     pool = LocalPool(); hist = []; t0 = time.time()

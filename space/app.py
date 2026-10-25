@@ -50,7 +50,7 @@ def run_demo(generations, population, seed, progress=gr.Progress()):
 with gr.Blocks(title="GENESIS demo") as demo:
     gr.Markdown(INTRO)
     with gr.Row():
-        gens = gr.Slider(2, 40, value=20, step=1, label="Generations")
+        gens = gr.Slider(2, 40, value=15, step=1, label="Generations")
         pop = gr.Slider(64, 512, value=256, step=64, label="Genomes proposed per generation")
         seed = gr.Number(value=0, precision=0, label="Random seed")
     btn = gr.Button("Run a small world", variant="primary")

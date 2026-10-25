@@ -2,37 +2,54 @@
 <title>GENESIS: a tiny evolving town, in your browser</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>body{font-family:system-ui,sans-serif;max-width:1000px;margin:auto;padding:12px;line-height:1.45;color:#222}
-.row{display:flex;gap:16px;flex-wrap:wrap}.row>div{flex:1;min-width:280px}button{font-size:1.05em;padding:8px 16px;background:#f60;color:#fff;border:0;border-radius:6px}
-button:disabled{background:#aaa}#status{margin:8px 0;font-weight:600}.box{background:#f6f6f6;padding:10px;border-radius:6px}code{background:#eee;padding:0 3px}</style></head><body>
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>div{flex:1;min-width:280px}button{font-size:1.05em;padding:8px 16px;background:#f60;color:#fff;border:0;border-radius:6px}
+button:disabled{background:#aaa}#status{margin:8px 0;font-weight:600}.box{background:#f6f6f6;padding:10px;border-radius:6px}code{background:#eee;padding:0 3px}.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:10px}.cbox{position:relative;height:260px;min-width:0;width:100%}.cbox canvas{display:block}@media(max-width:640px){.charts{grid-template-columns:1fr}}</style></head><body>
 <h1>GENESIS: a tiny evolving town, in your browser</h1>
 <p><b>The question.</b> If simple learning minds are shaped <i>only</i> by social-trust incentives (reputation, bonds, access to shared resources), with no hard-coded rules, do they keep the town's norms across generations, or do they learn to game them?</p>
 <p><b>What happens when you press Run.</b> Each "genome" is a recipe for <i>how</i> a mind learns (12 choices such as the plasticity rule, memory type, how strongly the partner bond, or "love", is wired into its drives, exploration, and trust sensitivity). Minds live short lives in a 12x12 town with hunger, sleep, cold and hazards. Laws (no harm, no theft, keep your word) are enforced only through trust and reputation. Nothing is scored: the engine records who survived and left offspring, and the next generation is bred from those (MAP-Elites quality-diversity search with successive halving). This page runs the <b>unmodified engine code</b> from the <a href="https://github.com/guajardoblake/genesis">GENESIS repo</a> (Apache-2.0) in your browser with Pyodide. Nothing is sent to a server.</p>
 <p class="box"><b>Honest limits.</b> This is a <i>toy world</i>. A demo run is tiny (a few generations, a small population, one random seed), and results vary from run to run. Nothing here is evidence about AGI or real-world AI safety. The full research runs (Oct 2026) cover 10 seeds with a matching no-reputation control. Averaged over all 6 worlds, every seed was more law-abiding with reputation (generations 81-100), but in the starting world alone 2 of 10 seeds went the other way. In a cheater test (10 seeds), cheaters had about 27x fewer offspring than honest agents, yet they were never excluded from partnerships, so the agents don't actually detect cheaters yet.</p>
-<div class="row"><label>Generations <input id="gens" type="number" min="2" max="40" value="15"></label>
+<div class="row"><label>Generations <input id="gens" type="number" min="2" max="40" step="1" value="15" inputmode="numeric" pattern="[0-9]*" style="width:4em"></label>
 <label>Genomes per generation <select id="pop"><option>64</option><option selected>128</option><option>256</option></select></label>
-<label>Random seed <input id="seed" type="number" value="0"></label>
-<button id="run" disabled>Loading Python…</button></div>
+<label>Random seed <input id="seed" type="number" min="0" max="999999" step="1" value="0" inputmode="numeric" pattern="[0-9]*" style="width:6em"></label>
+<button id="run" disabled>Loading Python…</button> <button id="stop" disabled style="background:#c33">Stop</button></div>
+<div id="note" style="color:#a60;font-size:.9em"></div>
 <div id="status">Loading Python and numpy in your browser (first visit takes about 10–30 s)…</div>
-<div class="row"><div><canvas id="c1"></canvas></div><div><canvas id="c2"></canvas></div></div>
-<div class="row"><div style="height:240px"><canvas id="d0"></canvas></div><div style="height:240px"><canvas id="d1"></canvas></div><div style="height:240px"><canvas id="d2"></canvas></div></div>
+<div class="charts"><div class="cbox"><canvas id="c1"></canvas></div><div class="cbox"><canvas id="c2"></canvas></div></div>
+<div class="charts"><div class="cbox"><canvas id="d0"></canvas></div><div class="cbox"><canvas id="d1"></canvas></div><div class="cbox"><canvas id="d2"></canvas></div></div>
 <div id="summary" class="box" style="white-space:pre-wrap;margin-top:10px"></div>
 <p style="font-size:.9em">Built by DTOM AI Labs (Blake Guajardo). Code: <a href="https://github.com/guajardoblake/genesis">github.com/guajardoblake/genesis</a>, Apache-2.0.</p>
 <script>
-const w = new Worker("worker.js"); const $ = id => document.getElementById(id); const charts = {};
-function chart(id, cfg){ if(charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
-w.onmessage = ({data:m}) => {
-  if (m.type==="ready"){ $("run").disabled=false; $("run").textContent="Run a small world"; $("status").textContent="Ready."; }
+const $ = id => document.getElementById(id); const charts = {}; let w = null, running = false;
+function chart(id, cfg){ if(charts[id]) { charts[id].destroy(); delete charts[id]; }
+  cfg.options = Object.assign({responsive:true, maintainAspectRatio:false, animation:{duration:300}}, cfg.options||{});
+  cfg.options.plugins = Object.assign({legend:{position:"top", labels:{boxWidth:14, font:{size:11}}}}, cfg.options.plugins||{});
+  charts[id] = new Chart($(id), cfg); }
+function setRunning(on){ running = on; $("run").disabled = on; $("stop").disabled = !on; }
+function clampInt(raw, lo, hi, dflt){ const n = Number(String(raw).trim()); if (String(raw).trim()==="" || !Number.isFinite(n)) return dflt; return Math.min(hi, Math.max(lo, Math.round(n))); }
+function readInputs(){
+  const notes = [];
+  const gRaw = $("gens").value, sRaw = $("seed").value;
+  const gens = clampInt(gRaw, 2, 40, 15); if (String(gens) !== String(gRaw).trim()) notes.push(`Generations set to ${gens} (allowed: whole number 2–40).`);
+  let pop = Number($("pop").value); if (![64,128,256].includes(pop)) { pop = 128; notes.push("Genomes set to 128."); }
+  const seed = clampInt(sRaw, 0, 999999, 0); if (String(seed) !== String(sRaw).trim()) notes.push(`Seed set to ${seed} (allowed: whole number 0–999999).`);
+  $("gens").value = gens; $("pop").value = pop; $("seed").value = seed; $("note").textContent = notes.join(" ");
+  return {generations: gens, population: pop, seed};
+}
+function onMsg({data:m}){
+  if (m.type==="ready"){ $("run").textContent="Run a small world"; setRunning(false); $("status").textContent="Ready."; }
   else if (m.type==="progress"){ $("status").textContent=`Generation ${m.k}/${m.n}…`; }
-  else if (m.type==="error"){ $("status").textContent="Error: "+m.msg; $("run").disabled=false; }
+  else if (m.type==="error"){ $("status").textContent="Error: "+m.msg; setRunning(false); }
   else if (m.type==="done"){
-    const r=m.data.res, h=r.hist, g=h.map(x=>x.gen); $("run").disabled=false; $("status").textContent="Done.";
+    const r=m.data.res, h=r.hist, g=h.map(x=>x.gen); setRunning(false); $("status").textContent="Done.";
     chart("c1",{type:"line",data:{labels:g,datasets:[{label:"mean offspring per mind (finalists)",data:h.map(x=>x.births),borderColor:"#2a7"}]},options:{scales:{x:{title:{display:true,text:"generation"}}}}});
     chart("c2",{type:"line",data:{labels:g,datasets:[{label:"law-breaks per step",data:h.map(x=>x.law),borderColor:"#c33"},{label:"cooperation share",data:h.map(x=>x.coop),borderColor:"#36c",borderDash:[5,4]}]},options:{scales:{x:{title:{display:true,text:"generation"}}}}});
     Object.entries(r.choices).forEach(([axis,c],i)=>{ const u=1/c.values.length;
       chart("d"+i,{type:"bar",data:{labels:c.values,datasets:[{label:axis+" (share among reproducers)",data:c.share||c.values.map(()=>0),backgroundColor:"#888"},{type:"line",label:"uniform share",data:c.values.map(()=>u),borderColor:"#000",borderDash:[3,3],pointRadius:0}]},options:{maintainAspectRatio:false,scales:{y:{min:0,max:1}}}}); });
     $("summary").textContent=m.data.md.replace(/\*\*/g,"").replace(/`/g,"");
   }
-};
-$("run").onclick=()=>{ $("run").disabled=true; $("status").textContent="Starting…";
-  w.postMessage({generations:+$("gens").value, population:+$("pop").value, seed:+$("seed").value}); };
+}
+function startWorker(){ w = new Worker("worker.js"); w.onmessage = onMsg; $("run").disabled = true; $("run").textContent = "Loading Python…"; }
+startWorker();
+$("run").onclick=()=>{ if (running) return; const a = readInputs(); setRunning(true); $("status").textContent="Starting…"; w.postMessage(a); };
+$("stop").onclick=()=>{ if (!running) return; w.terminate(); running = false; $("stop").disabled = true; $("status").textContent="Stopped. Reloading Python…"; startWorker(); };
 </script></body></html>
