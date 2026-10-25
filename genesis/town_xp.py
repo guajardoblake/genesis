@@ -11,6 +11,12 @@ class _CupyRng:
     def random(self, size=None): return self.r.random_sample(size)
     def normal(self, m, s, size=None): return self.r.normal(m, s, size)
     def integers(self, lo, hi, size=None): return self.r.randint(lo, hi, size)
+
+def _bc(xp, x, w=None, minlength=0):
+    """bincount that matches numpy on empty input (CuPy's raises on x.size == 0): returns int64 zeros of length minlength, exactly as numpy does (numpy gives int64 even with empty weights)."""
+    if x.size == 0: return xp.zeros(minlength, dtype=xp.int64)
+    return xp.bincount(x, w, minlength=minlength)
+
 def _rng(xp, seed): return np.random.default_rng(seed) if xp is np else _CupyRng(xp, seed)
 def _np(xp, x): return x if xp is np else xp.asnumpy(x)
 def _sa(xp):
@@ -182,7 +188,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         broke_promise = broke & promise & (near == partner)
         rep = xp.clip(rep - 0.1 * broke - 0.2 * broke_promise, 0, 1) if rpen == 1.0 else xp.clip(rep - rpen * (0.1 * broke + 0.2 * broke_promise), 0, 1)
         lost = broke & (near == partner)
-        if Gc: c_lost += xp.bincount(tid, (lost & ch).astype(float), minlength=nT)
+        if Gc: c_lost += _bc(xp, tid, (lost & ch).astype(float), minlength=nT)
         if not use_rep: rep = xp.full(B, 0.5)               # ablation: no reputation signal at all
         if Gc: rep = xp.where(ch, FAKE, rep)                 # cheaters' reputation is faked high
         bond = xp.where(lost, 0, bond); 
@@ -197,7 +203,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
         pi, pj = pi[ok], pj[ok]
         _, u = xp.unique(pj, return_index=True); pi, pj = pi[u], pj[u]
         ok2 = ~xp.isin(pi, pj); pi, pj = pi[ok2], pj[ok2]
-        if Gc: hb = ~ch[pi] | ~ch[pj]; h_bonds += xp.bincount(tid[pi], hb.astype(float), minlength=nT); c_bond_with += xp.bincount(tid[pi], (hb & (ch[pi] | ch[pj])).astype(float), minlength=nT)
+        if Gc: hb = ~ch[pi] | ~ch[pj]; h_bonds += _bc(xp, tid[pi], hb.astype(float), minlength=nT); c_bond_with += _bc(xp, tid[pi], (hb & (ch[pi] | ch[pj])).astype(float), minlength=nT)
         partner[pi] = pj; partner[pj] = pi; promise[pi] = True; promise[pj] = True
         haspart = partner >= 0
         bond = xp.where(haspart, xp.clip(bond + 0.05 * close + 0.02 * share, 0, 1), xp.maximum(bond - 0.05, 0))
@@ -256,7 +262,7 @@ def run_town(genomes, env, seed, T=96, per_genome=4, init_w=None, return_w=False
             snap_b = xp.where(run_m, bond, snap_b); snap_r = xp.where(run_m, rep, snap_r)
             snap_t = xp.where(run_m, tools, snap_t); snap_s = xp.where(run_m, prev_surprise, snap_s)
             if t % 16 == 15:   # a collapsed town stops (frozen: its minds no longer act or count)
-                am = xp.bincount(tid, alive.astype(float), minlength=nT) / xp.asarray(Bt_np)
+                am = _bc(xp, tid, alive.astype(float), minlength=nT) / xp.asarray(Bt_np)
                 stop = run_t & (am < 0.05); Tt = xp.where(stop, t + 1, Tt); run_t = run_t & ~stop
                 run_m = run_t[tid]; alive = alive & run_m
                 if not bool(run_t.any()): break
