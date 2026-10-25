@@ -1,5 +1,12 @@
 # GENESIS — open-ended search for how minds should learn
 
+## My core idea (thesis)
+**My thesis:** I believe a general AI can't exist on intelligence alone. It has to be built on the fundamentals that all minded life shares, but only the non-exclusive ones: traits found in every species that shows a mind of its own, not traits that belong to one species. Love, meaning the built-in pull to care for and bond with another, is one of those traits, and I believe it has to be present together with all the others, not instead of them. The first set of GENESIS runs is designed to test that by comparing towns where love is switched on against otherwise identical towns where it's switched off.
+
+**In plain words:** every animal that seems to have a mind of its own needs to eat, rest, stay warm, avoid pain, and bond with others. No single species owns these, so I call them non-exclusive traits. My bet is that a real general mind needs all of them at once, love included, and my first experiments check what changes when the love incentive is taken away.
+
+**What the first runs can and can't show:** every GENESIS creature lives with the shared basics (hunger, sleep, warmth, pain, and the drives to stay balanced and to reproduce). The main towns add the love incentive; the control towns (the ablation) remove it. In this first set the control also switches off reputation at the same time, so these runs test love and reputation together; a love-only control is the next run. This is a small simulated town, so results here are evidence about this town, not proof about AGI.
+
 ## The idea in plain words
 We do not design a finished mind. Each **genome is a recipe for how a mind learns**. Thousands of minds,
 each born with random weights, live together in a small town and learn during their own life using the rules
