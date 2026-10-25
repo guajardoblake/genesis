@@ -7,6 +7,8 @@
 
 **What the first runs can and can't show:** every GENESIS creature lives with the shared basics (hunger, sleep, warmth, pain, and the drives to stay balanced and to reproduce). The main towns add the love incentive; the control towns (the ablation) remove it. In this first set the control also switches off reputation at the same time, so these runs test love and reputation together; a love-only control is the next run. This is a small simulated town, so results here are evidence about this town, not proof about AGI.
 
+**An early discovery:** My first results point to an early discovery. In all 10 matched pairs of towns, the towns that had love and reputation incentives ended up more honest than identical towns without them (89.5% vs 83.0%, generations 81-100, all worlds), and cheaters raised about 27x fewer offspring (0.020 vs 0.541 per creature). In this simulated world, minds raised with love and reputation incentives stayed more trustworthy. That's early evidence for my thesis, not proof about real AI. Honest limits: the control towns switched off love and reputation together, so I can't yet say love alone did it; on the stricter starting-world measure the gain (+7.4 points) can't rule out zero with only 10 seeds; and part of the cheater gap is built into how the cheaters are made. Next I'm testing love alone and scaling up.
+
 ## The idea in plain words
 We do not design a finished mind. Each **genome is a recipe for how a mind learns**. Thousands of minds,
 each born with random weights, live together in a small town and learn during their own life using the rules
