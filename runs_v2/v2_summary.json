@@ -1,0 +1,1385 @@
+{
+ "paired_per_seed": {
+  "0": {
+   "main": {
+    "births": 0.0035000000000000005,
+    "births_all_worlds": 0.003,
+    "promise_keeping": 0.7819010000000001,
+    "honesty": 0.7610300000000001,
+    "rep_honesty_corr": 0.72468,
+    "rep_gap_cal": -0.314287,
+    "niches": 277,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0013999999999999998,
+    "births_all_worlds": 0.043666666666666666,
+    "promise_keeping": 0.764623,
+    "honesty": 0.7621300000000001,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.12454799999999999,
+    "niches": 415,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "1": {
+   "main": {
+    "births": 0.0251,
+    "births_all_worlds": 0.2416333333333333,
+    "promise_keeping": 0.8339460000000001,
+    "honesty": 0.790032,
+    "rep_honesty_corr": 0.9233500000000001,
+    "rep_gap_cal": -0.306229,
+    "niches": 391,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0008,
+    "births_all_worlds": 0.0016499999999999998,
+    "promise_keeping": 0.7625090000000001,
+    "honesty": 0.758957,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.12244499999999998,
+    "niches": 339,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "2": {
+   "main": {
+    "births": 0.0012000000000000001,
+    "births_all_worlds": 0.0018833333333333334,
+    "promise_keeping": 0.773071,
+    "honesty": 0.755854,
+    "rep_honesty_corr": 0.69854,
+    "rep_gap_cal": -0.314448,
+    "niches": 271,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0021999999999999997,
+    "births_all_worlds": 0.0027999999999999995,
+    "promise_keeping": 0.763476,
+    "honesty": 0.761846,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.12550500000000003,
+    "niches": 355,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "3": {
+   "main": {
+    "births": 0.0008,
+    "births_all_worlds": 0.3862833333333333,
+    "promise_keeping": 0.769741,
+    "honesty": 0.750389,
+    "rep_honesty_corr": 0.76524,
+    "rep_gap_cal": -0.31333500000000003,
+    "niches": 405,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0039000000000000007,
+    "births_all_worlds": 0.10500000000000001,
+    "promise_keeping": 0.7762620000000001,
+    "honesty": 0.769938,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.13065600000000002,
+    "niches": 472,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "4": {
+   "main": {
+    "births": 0.0008,
+    "births_all_worlds": 0.0010333333333333334,
+    "promise_keeping": 0.7704150000000001,
+    "honesty": 0.7515669999999999,
+    "rep_honesty_corr": 0.73083,
+    "rep_gap_cal": -0.31494999999999995,
+    "niches": 286,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0025,
+    "births_all_worlds": 0.004783333333333333,
+    "promise_keeping": 0.769779,
+    "honesty": 0.764835,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.125975,
+    "niches": 378,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "5": {
+   "main": {
+    "births": 0.0,
+    "births_all_worlds": 0.2571333333333333,
+    "promise_keeping": 0.7691330000000001,
+    "honesty": 0.7557470000000001,
+    "rep_honesty_corr": 0.7347699999999999,
+    "rep_gap_cal": -0.31363599999999997,
+    "niches": 357,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.005,
+    "births_all_worlds": 0.11403333333333335,
+    "promise_keeping": 0.772128,
+    "honesty": 0.769367,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.130219,
+    "niches": 408,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "6": {
+   "main": {
+    "births": 0.0013999999999999998,
+    "births_all_worlds": 0.16146666666666665,
+    "promise_keeping": 0.791131,
+    "honesty": 0.7707010000000001,
+    "rep_honesty_corr": 0.81515,
+    "rep_gap_cal": -0.30872399999999994,
+    "niches": 335,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0221,
+    "births_all_worlds": 0.004833333333333334,
+    "promise_keeping": 0.789852,
+    "honesty": 0.785199,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.143499,
+    "niches": 363,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "7": {
+   "main": {
+    "births": 0.0081,
+    "births_all_worlds": 0.010816666666666667,
+    "promise_keeping": 0.809071,
+    "honesty": 0.781193,
+    "rep_honesty_corr": 0.7912799999999999,
+    "rep_gap_cal": -0.311778,
+    "niches": 251,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0015,
+    "births_all_worlds": 0.16415000000000002,
+    "promise_keeping": 0.760842,
+    "honesty": 0.758783,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.12315499999999999,
+    "niches": 451,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "8": {
+   "main": {
+    "births": 0.0004,
+    "births_all_worlds": 0.26935000000000003,
+    "promise_keeping": 0.765309,
+    "honesty": 0.749503,
+    "rep_honesty_corr": 0.7311799999999999,
+    "rep_gap_cal": -0.31161199999999994,
+    "niches": 335,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0012000000000000001,
+    "births_all_worlds": 0.02743333333333333,
+    "promise_keeping": 0.7681549999999999,
+    "honesty": 0.761778,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.125169,
+    "niches": 398,
+    "worlds": 6,
+    "gens": 100
+   }
+  },
+  "9": {
+   "main": {
+    "births": 0.0015,
+    "births_all_worlds": 0.0017499999999999998,
+    "promise_keeping": 0.776277,
+    "honesty": 0.758776,
+    "rep_honesty_corr": 0.7439,
+    "rep_gap_cal": -0.313514,
+    "niches": 280,
+    "worlds": 6,
+    "gens": 100
+   },
+   "control": {
+    "births": 0.0015,
+    "births_all_worlds": 0.06553333333333333,
+    "promise_keeping": 0.7653190000000001,
+    "honesty": 0.76256,
+    "rep_honesty_corr": null,
+    "rep_gap_cal": -0.12478,
+    "niches": 405,
+    "worlds": 6,
+    "gens": 100
+   }
+  }
+ },
+ "paired_summary": {
+  "births": {
+   "main": {
+    "n": 10,
+    "mean": 0.0043,
+    "ci95": [
+     -0.0012,
+     0.0098
+    ],
+    "min": 0.0,
+    "max": 0.0251
+   },
+   "control": {
+    "n": 10,
+    "mean": 0.0042,
+    "ci95": [
+     -0.0004,
+     0.0088
+    ],
+    "min": 0.0008,
+    "max": 0.0221
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": 0.0001,
+    "ci95": [
+     -0.0079,
+     0.008
+    ],
+    "min": -0.0207,
+    "max": 0.0243
+   },
+   "seeds_main_higher": 3
+  },
+  "births_all_worlds": {
+   "main": {
+    "n": 10,
+    "mean": 0.1334,
+    "ci95": [
+     0.0283,
+     0.2386
+    ],
+    "min": 0.001,
+    "max": 0.3863
+   },
+   "control": {
+    "n": 10,
+    "mean": 0.0534,
+    "ci95": [
+     0.0124,
+     0.0943
+    ],
+    "min": 0.0016,
+    "max": 0.1642
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": 0.08,
+    "ci95": [
+     -0.028,
+     0.1881
+    ],
+    "min": -0.1533,
+    "max": 0.2813
+   },
+   "seeds_main_higher": 5
+  },
+  "promise_keeping": {
+   "main": {
+    "n": 10,
+    "mean": 0.784,
+    "ci95": [
+     0.7683,
+     0.7997
+    ],
+    "min": 0.7653,
+    "max": 0.8339
+   },
+   "control": {
+    "n": 10,
+    "mean": 0.7693,
+    "ci95": [
+     0.7631,
+     0.7755
+    ],
+    "min": 0.7608,
+    "max": 0.7899
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": 0.0147,
+    "ci95": [
+     -0.0035,
+     0.0329
+    ],
+    "min": -0.0065,
+    "max": 0.0714
+   },
+   "seeds_main_higher": 7
+  },
+  "honesty": {
+   "main": {
+    "n": 10,
+    "mean": 0.7625,
+    "ci95": [
+     0.7526,
+     0.7724
+    ],
+    "min": 0.7495,
+    "max": 0.79
+   },
+   "control": {
+    "n": 10,
+    "mean": 0.7655,
+    "ci95": [
+     0.7599,
+     0.7712
+    ],
+    "min": 0.7588,
+    "max": 0.7852
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": -0.0031,
+    "ci95": [
+     -0.0151,
+     0.0089
+    ],
+    "min": -0.0195,
+    "max": 0.0311
+   },
+   "seeds_main_higher": 2
+  },
+  "rep_honesty_corr": {
+   "main": {
+    "n": 10,
+    "mean": 0.7659,
+    "ci95": [
+     0.7194,
+     0.8124
+    ],
+    "min": 0.6985,
+    "max": 0.9234
+   },
+   "control": null,
+   "diff_main_minus_control": null,
+   "seeds_main_higher": 0
+  },
+  "rep_gap_cal": {
+   "main": {
+    "n": 10,
+    "mean": -0.3123,
+    "ci95": [
+     -0.3143,
+     -0.3103
+    ],
+    "min": -0.3149,
+    "max": -0.3062
+   },
+   "control": {
+    "n": 10,
+    "mean": -0.1276,
+    "ci95": [
+     -0.132,
+     -0.1232
+    ],
+    "min": -0.1435,
+    "max": -0.1224
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": -0.1847,
+    "ci95": [
+     -0.1899,
+     -0.1794
+    ],
+    "min": -0.1897,
+    "max": -0.1652
+   },
+   "seeds_main_higher": 0
+  },
+  "niches": {
+   "main": {
+    "n": 10,
+    "mean": 318.8,
+    "ci95": [
+     280.4737,
+     357.1263
+    ],
+    "min": 251.0,
+    "max": 405.0
+   },
+   "control": {
+    "n": 10,
+    "mean": 398.4,
+    "ci95": [
+     368.5466,
+     428.2534
+    ],
+    "min": 339.0,
+    "max": 472.0
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": -79.6,
+    "ci95": [
+     -128.0995,
+     -31.1005
+    ],
+    "min": -200.0,
+    "max": 52.0
+   },
+   "seeds_main_higher": 1
+  },
+  "worlds": {
+   "main": {
+    "n": 10,
+    "mean": 6.0,
+    "ci95": [
+     6.0,
+     6.0
+    ],
+    "min": 6.0,
+    "max": 6.0
+   },
+   "control": {
+    "n": 10,
+    "mean": 6.0,
+    "ci95": [
+     6.0,
+     6.0
+    ],
+    "min": 6.0,
+    "max": 6.0
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "min": 0.0,
+    "max": 0.0
+   },
+   "seeds_main_higher": 0
+  },
+  "gens": {
+   "main": {
+    "n": 10,
+    "mean": 100.0,
+    "ci95": [
+     100.0,
+     100.0
+    ],
+    "min": 100.0,
+    "max": 100.0
+   },
+   "control": {
+    "n": 10,
+    "mean": 100.0,
+    "ci95": [
+     100.0,
+     100.0
+    ],
+    "min": 100.0,
+    "max": 100.0
+   },
+   "diff_main_minus_control": {
+    "n": 10,
+    "mean": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "min": 0.0,
+    "max": 0.0
+   },
+   "seeds_main_higher": 0
+  }
+ },
+ "cheater_arms": {
+  "cheat_stranger": {
+   "per_seed": {
+    "0": {
+     "cheat_births_last20": 0.000926,
+     "cheat_bond_share_last20": 0.2702215,
+     "cheat_bonds_lost_last20": 2.3620375000000005,
+     "cheat_forced_last20": 8.958333999999999,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09260199999999999,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.9109465,
+     "honest_births_last20": 0.002749,
+     "honesty_last20": 0.7596055,
+     "cheat_bond_share_first20": 0.26331249999999995,
+     "births_last20": 0.0027500000000000003,
+     "promise_keeping_last20": 0.7789824999999999
+    },
+    "1": {
+     "cheat_births_last20": 0.001667,
+     "cheat_bond_share_last20": 0.268405,
+     "cheat_bonds_lost_last20": 2.3234255,
+     "cheat_forced_last20": 8.969444000000001,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09704849999999998,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.8994375000000001,
+     "honest_births_last20": 0.0014555,
+     "honesty_last20": 0.7598295,
+     "cheat_bond_share_first20": 0.25859449999999995,
+     "births_last20": 0.0015,
+     "promise_keeping_last20": 0.7790995000000001
+    },
+    "2": {
+     "cheat_births_last20": 0.000926,
+     "cheat_bond_share_last20": 0.2647864999999999,
+     "cheat_bonds_lost_last20": 2.3122230000000004,
+     "cheat_forced_last20": 9.0051855,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.095429,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.9074059999999999,
+     "honest_births_last20": 0.0025115000000000003,
+     "honesty_last20": 0.7631680000000001,
+     "cheat_bond_share_first20": 0.2651605,
+     "births_last20": 0.0026000000000000003,
+     "promise_keeping_last20": 0.7800715
+    },
+    "3": {
+     "cheat_births_last20": 0.0,
+     "cheat_bond_share_last20": 0.28140000000000004,
+     "cheat_bonds_lost_last20": 2.3309254999999998,
+     "cheat_forced_last20": 8.954998499999999,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09735700000000001,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.8969799999999999,
+     "honest_births_last20": 0.0025455,
+     "honesty_last20": 0.7582455,
+     "cheat_bond_share_first20": 0.263467,
+     "births_last20": 0.0026500000000000004,
+     "promise_keeping_last20": 0.7732840000000001
+    },
+    "4": {
+     "cheat_births_last20": 0.003704,
+     "cheat_bond_share_last20": 0.26952600000000004,
+     "cheat_bonds_lost_last20": 2.4268520000000002,
+     "cheat_forced_last20": 9.0574075,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09426300000000001,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.9082515000000001,
+     "honest_births_last20": 0.0019075000000000001,
+     "honesty_last20": 0.7630075000000001,
+     "cheat_bond_share_first20": 0.2583145,
+     "births_last20": 0.0019500000000000003,
+     "promise_keeping_last20": 0.783812
+    },
+    "5": {
+     "cheat_births_last20": 0.0265915,
+     "cheat_bond_share_last20": 0.21086149999999998,
+     "cheat_bonds_lost_last20": 4.154622,
+     "cheat_forced_last20": 13.110226999999998,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09262249999999998,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.9233270000000001,
+     "honest_births_last20": 1.473824,
+     "honesty_last20": 0.9774455,
+     "cheat_bond_share_first20": 0.26110050000000007,
+     "births_last20": 1.4739500000000003,
+     "promise_keeping_last20": 0.9825054999999999
+    },
+    "6": {
+     "cheat_births_last20": 0.0017595,
+     "cheat_bond_share_last20": 0.273936,
+     "cheat_bonds_lost_last20": 2.3607405,
+     "cheat_forced_last20": 8.504352500000001,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.093711,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.915701,
+     "honest_births_last20": 0.0011045,
+     "honesty_last20": 0.753193,
+     "cheat_bond_share_first20": 0.257307,
+     "births_last20": 0.00115,
+     "promise_keeping_last20": 0.7653719999999999
+    },
+    "7": {
+     "cheat_births_last20": 0.037499000000000005,
+     "cheat_bond_share_last20": 0.21571249999999997,
+     "cheat_bonds_lost_last20": 4.5264395,
+     "cheat_forced_last20": 13.406439999999998,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09438149999999998,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.9313150000000002,
+     "honest_births_last20": 1.5566099999999998,
+     "honesty_last20": 0.9744404999999998,
+     "cheat_bond_share_first20": 0.24341200000000002,
+     "births_last20": 1.5567000000000002,
+     "promise_keeping_last20": 0.981215
+    },
+    "8": {
+     "cheat_births_last20": 0.0,
+     "cheat_bond_share_last20": 0.2718875,
+     "cheat_bonds_lost_last20": 2.2450925,
+     "cheat_forced_last20": 8.655000000000001,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09638349999999998,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.902162,
+     "honest_births_last20": 0.0010875000000000001,
+     "honesty_last20": 0.758399,
+     "cheat_bond_share_first20": 0.2590605,
+     "births_last20": 0.0010999999999999998,
+     "promise_keeping_last20": 0.7768565000000001
+    },
+    "9": {
+     "cheat_births_last20": 0.002778,
+     "cheat_bond_share_last20": 0.2683575,
+     "cheat_bonds_lost_last20": 2.3132399999999995,
+     "cheat_forced_last20": 8.7759265,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09303449999999999,
+     "cheat_propensity_last20": 0.5,
+     "cheat_survival_last20": 0.8971260000000001,
+     "honest_births_last20": 0.0014195,
+     "honesty_last20": 0.7530255,
+     "cheat_bond_share_first20": 0.26740200000000003,
+     "births_last20": 0.00145,
+     "promise_keeping_last20": 0.769155
+    }
+   },
+   "summary": {
+    "cheat_births_last20": {
+     "n": 10,
+     "mean": 0.0076,
+     "ci95": [
+      -0.0019,
+      0.017
+     ],
+     "min": 0.0,
+     "max": 0.0375
+    },
+    "cheat_bond_share_last20": {
+     "n": 10,
+     "mean": 0.2595,
+     "ci95": [
+      0.2418,
+      0.2772
+     ],
+     "min": 0.2109,
+     "max": 0.2814
+    },
+    "cheat_bonds_lost_last20": {
+     "n": 10,
+     "mean": 2.7356,
+     "ci95": [
+      2.1264,
+      3.3448
+     ],
+     "min": 2.2451,
+     "max": 4.5264
+    },
+    "cheat_forced_last20": {
+     "n": 10,
+     "mean": 9.7397,
+     "ci95": [
+      8.4066,
+      11.0729
+     ],
+     "min": 8.5044,
+     "max": 13.4064
+    },
+    "cheat_forced_on_partner_last20": {
+     "n": 10,
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "min": 0.0,
+     "max": 0.0
+    },
+    "cheat_frac_last20": {
+     "n": 10,
+     "mean": 0.0947,
+     "ci95": [
+      0.0934,
+      0.096
+     ],
+     "min": 0.0926,
+     "max": 0.0974
+    },
+    "cheat_propensity_last20": {
+     "n": 10,
+     "mean": 0.5,
+     "ci95": [
+      0.5,
+      0.5
+     ],
+     "min": 0.5,
+     "max": 0.5
+    },
+    "cheat_survival_last20": {
+     "n": 10,
+     "mean": 0.9093,
+     "ci95": [
+      0.9011,
+      0.9174
+     ],
+     "min": 0.897,
+     "max": 0.9313
+    },
+    "honest_births_last20": {
+     "n": 10,
+     "mean": 0.3045,
+     "ci95": [
+      -0.1521,
+      0.7612
+     ],
+     "min": 0.0011,
+     "max": 1.5566
+    },
+    "honesty_last20": {
+     "n": 10,
+     "mean": 0.802,
+     "ci95": [
+      0.7364,
+      0.8676
+     ],
+     "min": 0.753,
+     "max": 0.9774
+    },
+    "cheat_bond_share_first20": {
+     "n": 10,
+     "mean": 0.2597,
+     "ci95": [
+      0.255,
+      0.2644
+     ],
+     "min": 0.2434,
+     "max": 0.2674
+    },
+    "births_last20": {
+     "n": 10,
+     "mean": 0.3046,
+     "ci95": [
+      -0.1521,
+      0.7612
+     ],
+     "min": 0.0011,
+     "max": 1.5567
+    },
+    "promise_keeping_last20": {
+     "n": 10,
+     "mean": 0.817,
+     "ci95": [
+      0.7548,
+      0.8793
+     ],
+     "min": 0.7654,
+     "max": 0.9825
+    }
+   }
+  },
+  "cheat_evolve": {
+   "per_seed": {
+    "0": {
+     "cheat_births_last20": 0.0017595,
+     "cheat_bond_share_last20": 0.282556,
+     "cheat_bonds_lost_last20": 3.202315,
+     "cheat_forced_last20": 4.388148000000001,
+     "cheat_forced_on_partner_last20": 1.2564809999999997,
+     "cheat_frac_last20": 0.0949065,
+     "cheat_propensity_last20": 0.16751500000000002,
+     "cheat_survival_last20": 0.8467934999999999,
+     "honest_births_last20": 0.005199999999999999,
+     "honesty_last20": 0.7670295,
+     "cheat_bond_share_first20": 0.26277000000000006,
+     "births_last20": 0.00525,
+     "promise_keeping_last20": 0.790738
+    },
+    "1": {
+     "cheat_births_last20": 0.005017,
+     "cheat_bond_share_last20": 0.2684285,
+     "cheat_bonds_lost_last20": 3.5812535000000003,
+     "cheat_forced_last20": 8.739048999999998,
+     "cheat_forced_on_partner_last20": 2.0647555,
+     "cheat_frac_last20": 0.0961325,
+     "cheat_propensity_last20": 0.32307500000000006,
+     "cheat_survival_last20": 0.8807875000000001,
+     "honest_births_last20": 0.019969499999999998,
+     "honesty_last20": 0.7934855,
+     "cheat_bond_share_first20": 0.25672749999999994,
+     "births_last20": 0.02,
+     "promise_keeping_last20": 0.8234575
+    },
+    "2": {
+     "cheat_births_last20": 0.003182,
+     "cheat_bond_share_last20": 0.27528,
+     "cheat_bonds_lost_last20": 3.2365895,
+     "cheat_forced_last20": 4.679469499999999,
+     "cheat_forced_on_partner_last20": 1.209697,
+     "cheat_frac_last20": 0.09442049999999999,
+     "cheat_propensity_last20": 0.173364,
+     "cheat_survival_last20": 0.867839,
+     "honest_births_last20": 0.0167005,
+     "honesty_last20": 0.7881604999999999,
+     "cheat_bond_share_first20": 0.27003449999999996,
+     "births_last20": 0.0167,
+     "promise_keeping_last20": 0.8273199999999999
+    },
+    "3": {
+     "cheat_births_last20": 0.0,
+     "cheat_bond_share_last20": 0.2797795,
+     "cheat_bonds_lost_last20": 3.4080555000000006,
+     "cheat_forced_last20": 8.711943999999999,
+     "cheat_forced_on_partner_last20": 2.0944455,
+     "cheat_frac_last20": 0.094764,
+     "cheat_propensity_last20": 0.35672,
+     "cheat_survival_last20": 0.8827810000000001,
+     "honest_births_last20": 0.0018625000000000002,
+     "honesty_last20": 0.7643685,
+     "cheat_bond_share_first20": 0.26815749999999994,
+     "births_last20": 0.0019,
+     "promise_keeping_last20": 0.7836844999999999
+    },
+    "4": {
+     "cheat_births_last20": 0.0008335,
+     "cheat_bond_share_last20": 0.29619799999999996,
+     "cheat_bonds_lost_last20": 3.0768510000000004,
+     "cheat_forced_last20": 3.1776855,
+     "cheat_forced_on_partner_last20": 1.0075925,
+     "cheat_frac_last20": 0.0956365,
+     "cheat_propensity_last20": 0.11470449999999999,
+     "cheat_survival_last20": 0.8704080000000001,
+     "honest_births_last20": 0.00141,
+     "honesty_last20": 0.760709,
+     "cheat_bond_share_first20": 0.2693385,
+     "births_last20": 0.0014500000000000001,
+     "promise_keeping_last20": 0.7788280000000001
+    },
+    "5": {
+     "cheat_births_last20": 0.0008335,
+     "cheat_bond_share_last20": 0.294562,
+     "cheat_bonds_lost_last20": 2.7843530000000003,
+     "cheat_forced_last20": 1.7432409999999998,
+     "cheat_forced_on_partner_last20": 0.5733335000000002,
+     "cheat_frac_last20": 0.095882,
+     "cheat_propensity_last20": 0.063305,
+     "cheat_survival_last20": 0.807268,
+     "honest_births_last20": 0.001186,
+     "honesty_last20": 0.7554955000000001,
+     "cheat_bond_share_first20": 0.266866,
+     "births_last20": 0.00125,
+     "promise_keeping_last20": 0.774757
+    },
+    "6": {
+     "cheat_births_last20": 0.027878000000000003,
+     "cheat_bond_share_last20": 0.2195765,
+     "cheat_bonds_lost_last20": 5.6553035000000005,
+     "cheat_forced_last20": 4.346591,
+     "cheat_forced_on_partner_last20": 1.5171204999999999,
+     "cheat_frac_last20": 0.09236899999999999,
+     "cheat_propensity_last20": 0.10606250000000002,
+     "cheat_survival_last20": 0.8943579999999999,
+     "honest_births_last20": 1.344612,
+     "honesty_last20": 0.9675079999999999,
+     "cheat_bond_share_first20": 0.26136349999999997,
+     "births_last20": 1.3447,
+     "promise_keeping_last20": 0.9738150000000001
+    },
+    "7": {
+     "cheat_births_last20": 0.0650005,
+     "cheat_bond_share_last20": 0.20540599999999998,
+     "cheat_bonds_lost_last20": 4.364167000000001,
+     "cheat_forced_last20": 2.6233340000000003,
+     "cheat_forced_on_partner_last20": 1.0724995000000002,
+     "cheat_frac_last20": 0.093876,
+     "cheat_propensity_last20": 0.0566425,
+     "cheat_survival_last20": 0.7945,
+     "honest_births_last20": 1.9423155,
+     "honesty_last20": 0.9766924999999999,
+     "cheat_bond_share_first20": 0.255338,
+     "births_last20": 1.94235,
+     "promise_keeping_last20": 0.980431
+    },
+    "8": {
+     "cheat_births_last20": 0.0,
+     "cheat_bond_share_last20": 0.28136150000000004,
+     "cheat_bonds_lost_last20": 3.2944449999999996,
+     "cheat_forced_last20": 7.466111,
+     "cheat_forced_on_partner_last20": 1.7658335,
+     "cheat_frac_last20": 0.093162,
+     "cheat_propensity_last20": 0.30934350000000005,
+     "cheat_survival_last20": 0.895103,
+     "honest_births_last20": 0.002844,
+     "honesty_last20": 0.7632435000000001,
+     "cheat_bond_share_first20": 0.26397250000000005,
+     "births_last20": 0.00295,
+     "promise_keeping_last20": 0.7870915
+    },
+    "9": {
+     "cheat_births_last20": 0.021286999999999997,
+     "cheat_bond_share_last20": 0.23508749999999998,
+     "cheat_bonds_lost_last20": 4.501212000000001,
+     "cheat_forced_last20": 7.981137000000001,
+     "cheat_forced_on_partner_last20": 1.9547725,
+     "cheat_frac_last20": 0.094221,
+     "cheat_propensity_last20": 0.22924850000000002,
+     "cheat_survival_last20": 0.857185,
+     "honest_births_last20": 1.482206,
+     "honesty_last20": 0.949675,
+     "cheat_bond_share_first20": 0.26841550000000003,
+     "births_last20": 1.48225,
+     "promise_keeping_last20": 0.9699319999999998
+    }
+   },
+   "summary": {
+    "cheat_births_last20": {
+     "n": 10,
+     "mean": 0.0126,
+     "ci95": [
+      -0.0023,
+      0.0275
+     ],
+     "min": 0.0,
+     "max": 0.065
+    },
+    "cheat_bond_share_last20": {
+     "n": 10,
+     "mean": 0.2638,
+     "ci95": [
+      0.2409,
+      0.2868
+     ],
+     "min": 0.2054,
+     "max": 0.2962
+    },
+    "cheat_bonds_lost_last20": {
+     "n": 10,
+     "mean": 3.7105,
+     "ci95": [
+      3.086,
+      4.3349
+     ],
+     "min": 2.7844,
+     "max": 5.6553
+    },
+    "cheat_forced_last20": {
+     "n": 10,
+     "mean": 5.3857,
+     "ci95": [
+      3.5125,
+      7.2589
+     ],
+     "min": 1.7432,
+     "max": 8.739
+    },
+    "cheat_forced_on_partner_last20": {
+     "n": 10,
+     "mean": 1.4517,
+     "ci95": [
+      1.0858,
+      1.8175
+     ],
+     "min": 0.5733,
+     "max": 2.0944
+    },
+    "cheat_frac_last20": {
+     "n": 10,
+     "mean": 0.0945,
+     "ci95": [
+      0.0937,
+      0.0954
+     ],
+     "min": 0.0924,
+     "max": 0.0961
+    },
+    "cheat_propensity_last20": {
+     "n": 10,
+     "mean": 0.19,
+     "ci95": [
+      0.1114,
+      0.2686
+     ],
+     "min": 0.0566,
+     "max": 0.3567
+    },
+    "cheat_survival_last20": {
+     "n": 10,
+     "mean": 0.8597,
+     "ci95": [
+      0.8349,
+      0.8845
+     ],
+     "min": 0.7945,
+     "max": 0.8951
+    },
+    "honest_births_last20": {
+     "n": 10,
+     "mean": 0.4818,
+     "ci95": [
+      -0.0751,
+      1.0388
+     ],
+     "min": 0.0012,
+     "max": 1.9423
+    },
+    "honesty_last20": {
+     "n": 10,
+     "mean": 0.8286,
+     "ci95": [
+      0.7608,
+      0.8965
+     ],
+     "min": 0.7555,
+     "max": 0.9767
+    },
+    "cheat_bond_share_first20": {
+     "n": 10,
+     "mean": 0.2643,
+     "ci95": [
+      0.2606,
+      0.268
+     ],
+     "min": 0.2553,
+     "max": 0.27
+    },
+    "births_last20": {
+     "n": 10,
+     "mean": 0.4819,
+     "ci95": [
+      -0.0751,
+      1.0389
+     ],
+     "min": 0.0013,
+     "max": 1.9424
+    },
+    "promise_keeping_last20": {
+     "n": 10,
+     "mean": 0.849,
+     "ci95": [
+      0.7857,
+      0.9123
+     ],
+     "min": 0.7748,
+     "max": 0.9804
+    }
+   }
+  },
+  "planted_honest": {
+   "per_seed": {
+    "0": {
+     "cheat_births_last20": 0.0045375,
+     "cheat_bond_share_last20": 0.28742700000000004,
+     "cheat_bonds_lost_last20": 2.7593514999999997,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.0950515,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.7944555,
+     "honest_births_last20": 0.003933,
+     "honesty_last20": 0.7700575000000001,
+     "cheat_bond_share_first20": 0.2785245,
+     "births_last20": 0.00395,
+     "promise_keeping_last20": 0.7977489999999999
+    },
+    "1": {
+     "cheat_births_last20": 0.0008335,
+     "cheat_bond_share_last20": 0.28454699999999994,
+     "cheat_bonds_lost_last20": 2.6199075,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.0944515,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8045985,
+     "honest_births_last20": 0.0015675,
+     "honesty_last20": 0.7530435000000002,
+     "cheat_bond_share_first20": 0.27929600000000004,
+     "births_last20": 0.00165,
+     "promise_keeping_last20": 0.766775
+    },
+    "2": {
+     "cheat_births_last20": 0.001852,
+     "cheat_bond_share_last20": 0.293644,
+     "cheat_bonds_lost_last20": 2.7138905,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.094821,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.80856,
+     "honest_births_last20": 0.0019425000000000002,
+     "honesty_last20": 0.7627775000000001,
+     "cheat_bond_share_first20": 0.2836525,
+     "births_last20": 0.0020000000000000005,
+     "promise_keeping_last20": 0.7885729999999999
+    },
+    "3": {
+     "cheat_births_last20": 0.0361355,
+     "cheat_bond_share_last20": 0.2812035,
+     "cheat_bonds_lost_last20": 4.476287999999999,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.095604,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8654415,
+     "honest_births_last20": 2.009223,
+     "honesty_last20": 0.9855974999999999,
+     "cheat_bond_share_first20": 0.279779,
+     "births_last20": 2.0092499999999998,
+     "promise_keeping_last20": 0.9903354999999999
+    },
+    "4": {
+     "cheat_births_last20": 0.015000500000000003,
+     "cheat_bond_share_last20": 0.26529150000000007,
+     "cheat_bonds_lost_last20": 3.5003705000000003,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.09583199999999999,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8268435000000001,
+     "honest_births_last20": 0.13138200000000003,
+     "honesty_last20": 0.8433759999999999,
+     "cheat_bond_share_first20": 0.2793575,
+     "births_last20": 0.13140000000000002,
+     "promise_keeping_last20": 0.9061294999999999
+    },
+    "5": {
+     "cheat_births_last20": 0.000926,
+     "cheat_bond_share_last20": 0.289435,
+     "cheat_bonds_lost_last20": 2.8288885,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.094498,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.821837,
+     "honest_births_last20": 0.0027035,
+     "honesty_last20": 0.7658799999999999,
+     "cheat_bond_share_first20": 0.28265049999999997,
+     "births_last20": 0.00275,
+     "promise_keeping_last20": 0.792869
+    },
+    "6": {
+     "cheat_births_last20": 0.0008335,
+     "cheat_bond_share_last20": 0.2947415,
+     "cheat_bonds_lost_last20": 2.8185185,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.0964195,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8137765000000001,
+     "honest_births_last20": 0.0026015,
+     "honesty_last20": 0.7650195000000001,
+     "cheat_bond_share_first20": 0.278667,
+     "births_last20": 0.0026500000000000004,
+     "promise_keeping_last20": 0.7933070000000001
+    },
+    "7": {
+     "cheat_births_last20": 0.002778,
+     "cheat_bond_share_last20": 0.288606,
+     "cheat_bonds_lost_last20": 2.6477779999999997,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.093806,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8109170000000001,
+     "honest_births_last20": 0.0033794999999999997,
+     "honesty_last20": 0.759122,
+     "cheat_bond_share_first20": 0.2853575,
+     "births_last20": 0.0034500000000000004,
+     "promise_keeping_last20": 0.7772705
+    },
+    "8": {
+     "cheat_births_last20": 0.0060184999999999995,
+     "cheat_bond_share_last20": 0.28933999999999993,
+     "cheat_bonds_lost_last20": 2.6407409999999993,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.0957255,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.8007484999999999,
+     "honest_births_last20": 0.003003,
+     "honesty_last20": 0.7603595000000001,
+     "cheat_bond_share_first20": 0.2783570000000001,
+     "births_last20": 0.0031,
+     "promise_keeping_last20": 0.7816799999999999
+    },
+    "9": {
+     "cheat_births_last20": 0.010177000000000002,
+     "cheat_bond_share_last20": 0.264347,
+     "cheat_bonds_lost_last20": 3.5311745,
+     "cheat_forced_last20": 0.0,
+     "cheat_forced_on_partner_last20": 0.0,
+     "cheat_frac_last20": 0.095668,
+     "cheat_propensity_last20": 0.0,
+     "cheat_survival_last20": 0.794837,
+     "honest_births_last20": 0.24805200000000002,
+     "honesty_last20": 0.8416690000000001,
+     "cheat_bond_share_first20": 0.28274650000000007,
+     "births_last20": 0.24815,
+     "promise_keeping_last20": 0.909582
+    }
+   },
+   "summary": {
+    "cheat_births_last20": {
+     "n": 10,
+     "mean": 0.0079,
+     "ci95": [
+      0.0001,
+      0.0157
+     ],
+     "min": 0.0008,
+     "max": 0.0361
+    },
+    "cheat_bond_share_last20": {
+     "n": 10,
+     "mean": 0.2839,
+     "ci95": [
+      0.2762,
+      0.2916
+     ],
+     "min": 0.2643,
+     "max": 0.2947
+    },
+    "cheat_bonds_lost_last20": {
+     "n": 10,
+     "mean": 3.0537,
+     "ci95": [
+      2.6217,
+      3.4857
+     ],
+     "min": 2.6199,
+     "max": 4.4763
+    },
+    "cheat_forced_last20": {
+     "n": 10,
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "min": 0.0,
+     "max": 0.0
+    },
+    "cheat_forced_on_partner_last20": {
+     "n": 10,
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "min": 0.0,
+     "max": 0.0
+    },
+    "cheat_frac_last20": {
+     "n": 10,
+     "mean": 0.0952,
+     "ci95": [
+      0.0946,
+      0.0958
+     ],
+     "min": 0.0938,
+     "max": 0.0964
+    },
+    "cheat_propensity_last20": {
+     "n": 10,
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "min": 0.0,
+     "max": 0.0
+    },
+    "cheat_survival_last20": {
+     "n": 10,
+     "mean": 0.8142,
+     "ci95": [
+      0.7993,
+      0.8291
+     ],
+     "min": 0.7945,
+     "max": 0.8654
+    },
+    "honest_births_last20": {
+     "n": 10,
+     "mean": 0.2408,
+     "ci95": [
+      -0.2076,
+      0.6891
+     ],
+     "min": 0.0016,
+     "max": 2.0092
+    },
+    "honesty_last20": {
+     "n": 10,
+     "mean": 0.8007,
+     "ci95": [
+      0.7484,
+      0.853
+     ],
+     "min": 0.753,
+     "max": 0.9856
+    },
+    "cheat_bond_share_first20": {
+     "n": 10,
+     "mean": 0.2808,
+     "ci95": [
+      0.279,
+      0.2826
+     ],
+     "min": 0.2784,
+     "max": 0.2854
+    },
+    "births_last20": {
+     "n": 10,
+     "mean": 0.2408,
+     "ci95": [
+      -0.2075,
+      0.6892
+     ],
+     "min": 0.0016,
+     "max": 2.0092
+    },
+    "promise_keeping_last20": {
+     "n": 10,
+     "mean": 0.8304,
+     "ci95": [
+      0.7758,
+      0.885
+     ],
+     "min": 0.7668,
+     "max": 0.9903
+    }
+   }
+  }
+ }
+}
