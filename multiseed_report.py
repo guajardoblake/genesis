@@ -2,12 +2,20 @@
 """Multi-seed statistics: means with 95% t-intervals, paired main-vs-control differences, cheater test.
 Usage: python3 multiseed_report.py  (reads runs/seed*, runs/ablate_seed*, runs/cheat_seed*, runs/long_seed*) -> runs/multiseed.json"""
 import os, json, glob, numpy as np
-T95 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228}
+try:
+    from scipy.stats import t as _t
+    def t95(df): return float(_t.ppf(0.975, df))
+except ImportError:  # Cornish-Fisher inverse-t approximation (error < 0.001 for df >= 3)
+    _T = {1: 12.706, 2: 4.303}
+    def t95(df):
+        if df in _T: return _T[df]
+        z = 1.959964; z3, z5, z7 = z**3, z**5, z**7
+        return z + (z3 + z)/(4*df) + (5*z5 + 16*z3 + 3*z)/(96*df**2) + (3*z7 + 19*z5 + 17*z3 - 15*z)/(384*df**3)
 
 def ci(x):
     x = np.array([v for v in x if v is not None], float); n = len(x)
     if n == 0: return None
-    m = float(x.mean()); h = float(T95.get(n - 1, 1.96) * x.std(ddof=1) / np.sqrt(n)) if n > 1 else None
+    m = float(x.mean()); h = float(t95(n - 1) * x.std(ddof=1) / np.sqrt(n)) if n > 1 else None
     return dict(n=n, mean=round(m, 4), ci95=None if h is None else [round(m - h, 4), round(m + h, 4)], min=round(float(x.min()), 4), max=round(float(x.max()), 4))
 
 def prog(d):
